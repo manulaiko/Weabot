@@ -21,9 +21,23 @@ public class HelpCommand extends Command
     public void execute(MessageReceivedEvent event, String[] args)
     {
         String message = "";
+        String name    = "";
+
+        if(args.length > 1) {
+            name = args[1];
+        }
 
         for(Command command : Main.messageListener.commands) {
-            message += command.getHelp() +"\n";
+            boolean matchesName = (Main.configuration.getBoolean("bot.ignoreCase")) ?
+                                        command.getName().equalsIgnoreCase(name) :
+                                        command.getName().equals(name);
+
+            if(
+                name.isEmpty() ||
+                matchesName
+            ) {
+                message += command.getHelp() +"\n";
+            }
         }
 
         event.getChannel()
@@ -50,6 +64,6 @@ public class HelpCommand extends Command
         return "Prints available commands\n"+
                "\n"+
                "Usage:\n"+
-               "    "+ this.getFullName();
+               "    "+ this.getFullName() +" ([command name])";
     }
 }
