@@ -1,8 +1,7 @@
 package com.manulaiko.weabot.commands;
 
-import com.manulaiko.tabitha.utils.ICommand;
 import com.manulaiko.weabot.launcher.Main;
-import net.dv8tion.jda.events.Event;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
 /**
  * Base class for all commands.
@@ -64,5 +63,5 @@ public abstract class Command
      * @param event Event that fired the command.
      * @param args  Command arguments.
      */
-    public abstract void execute(Event event, String[] args);
+    public abstract void execute(MessageReceivedEvent event, String[] args);
 }

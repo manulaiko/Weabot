@@ -3,7 +3,7 @@ package com.manulaiko.weabot.launcher;
 import java.util.ArrayList;
 
 import com.manulaiko.tabitha.Console;
-import com.manulaiko.tabitha.utils.ICommand;
+import com.manulaiko.weabot.commands.Command;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 
@@ -21,7 +21,7 @@ public class MessageListener extends ListenerAdapter
      *
      * @var Available commands.
      */
-    public ArrayList<ICommand> commands = new ArrayList();
+    public ArrayList<Command> commands = new ArrayList();
 
     /**
      * Constructor.
@@ -47,7 +47,7 @@ public class MessageListener extends ListenerAdapter
 
         this.commands.forEach((c)->{
             if(c.canExecute(command[0])) {
-                c.execute(command);
+                c.execute(event, command);
             }
         });
     }
