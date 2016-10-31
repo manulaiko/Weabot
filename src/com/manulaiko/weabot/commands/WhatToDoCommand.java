@@ -24,7 +24,7 @@ public class WhatToDoCommand extends Command
      */
     public void execute(MessageReceivedEvent event, String[] args)
     {
-        ArrayList<String> options = this._getOptions(args);
+        ArrayList<String> options = (args.length > 1) ? this._getOptions(args) : this._getDefaultOptions();
 
         int random = ThreadLocalRandom.current()
                                       .nextInt(0, options.size());

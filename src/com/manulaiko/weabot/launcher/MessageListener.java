@@ -45,7 +45,7 @@ public class MessageListener extends ListenerAdapter
     public void onMessageReceived(MessageReceivedEvent event)
     {
         if(Main.configuration.getBoolean("core.printMessages")) {
-            Console.println("["+ event.getTextChannel().getName() +"] ("+ event.getAuthorName() +"): "+ event.getMessage());
+            Console.println("["+ event.getTextChannel().getName() +"] ("+ event.getAuthorName() +"): "+ event.getMessage().getContent());
         }
 
         String[] command = event.getMessage()
