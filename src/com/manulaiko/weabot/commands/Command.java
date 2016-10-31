@@ -2,13 +2,14 @@ package com.manulaiko.weabot.commands;
 
 import com.manulaiko.tabitha.utils.ICommand;
 import com.manulaiko.weabot.launcher.Main;
+import net.dv8tion.jda.events.Event;
 
 /**
  * Base class for all commands.
  *
  * @author Manulaiko <manulaiko@gmail.com>
  */
-public abstract class Command implements ICommand
+public abstract class Command
 {
     /**
      * Checks whether this command can execute `name` command.
@@ -42,4 +43,26 @@ public abstract class Command implements ICommand
 
         return help;
     }
+
+    /**
+     * Returns command name.
+     *
+     * @return Command name.
+     */
+    public abstract String getName();
+
+    /**
+     * Returns command description.
+     *
+     * @return Command description.
+     */
+    public abstract String getDescription();
+
+    /**
+     * Executes the command.
+     *
+     * @param event Event that fired the command.
+     * @param args  Command arguments.
+     */
+    public abstract void execute(Event event, String[] args);
 }
