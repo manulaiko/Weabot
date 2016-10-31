@@ -39,7 +39,7 @@ public class MessageListener extends ListenerAdapter
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
-        if(Main.configuration.getBoolean("bot.printMessages")) {
+        if(Main.configuration.getBoolean("core.printMessages")) {
             Console.println("["+ event.getTextChannel().getName() +"] ("+ event.getAuthorName() +"): "+ event.getMessage());
         }
 
