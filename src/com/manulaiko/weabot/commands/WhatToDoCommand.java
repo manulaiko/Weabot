@@ -97,11 +97,11 @@ public class WhatToDoCommand extends Command
         return "Offers random things to do when you don't know what to do in life.\n" +
                 "\n" +
                 "Usage:\n" +
-                "    "+ Main.configuration.getString("bot.prefix") +"what_to_do ([+]) ([options])\n" +
+                "    "+ this.getFullName() +" ([+]) ([options])\n" +
                 "Example:\n" +
-                "    Get random default option: "+ Main.configuration.getString("bot.prefix") +"what_to_do\n" +
-                "    Get random custom option: "+ Main.configuration.getString("bot.prefix") +"what_to_do ListenToMusic WatchAnime LearnSomething\n" +
-                "    Get random custom or default option: "+ Main.configuration.getString("bot.prefix") +"what_to_do + ListenToMusic WatchAnime LearnSomething\n" +
+                "    Get random default option: "+ this.getFullName() +"\n" +
+                "    Get random custom option: "+ this.getFullName() +" ListenToMusic WatchAnime LearnSomething\n" +
+                "    Get random custom or default option: "+ this.getFullName() +" + ListenToMusic WatchAnime LearnSomething\n" +
                 "Default options:\n" +
                 options;
     }

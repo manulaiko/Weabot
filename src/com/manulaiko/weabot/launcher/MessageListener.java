@@ -23,7 +23,7 @@ public class MessageListener extends ListenerAdapter
      *
      * @var Available commands.
      */
-    public ArrayList<Command> commands = new ArrayList();
+    public ArrayList<Command> commands = new ArrayList<>();
 
     /**
      * Constructor.
@@ -48,7 +48,9 @@ public class MessageListener extends ListenerAdapter
             Console.println("["+ event.getTextChannel().getName() +"] ("+ event.getAuthorName() +"): "+ event.getMessage());
         }
 
-        String[] command = event.getMessage().getContent().split(" ");
+        String[] command = event.getMessage()
+                                .getContent()
+                                .split(" ");
 
         this.commands.forEach((c)->{
             if(c.canExecute(command[0])) {

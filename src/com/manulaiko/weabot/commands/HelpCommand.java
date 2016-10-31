@@ -26,7 +26,8 @@ public class HelpCommand extends Command
             message += command.getHelp() +"\n";
         }
 
-        event.getChannel().sendMessage(message);
+        event.getChannel()
+             .sendMessage(message);
     }
 
     /**
@@ -49,6 +50,6 @@ public class HelpCommand extends Command
         return "Prints available commands\n"+
                "\n"+
                "Usage:\n"+
-               "    "+ Main.configuration.getString("bot.prefix") +"help";
+               "    "+ this.getFullName();
     }
 }

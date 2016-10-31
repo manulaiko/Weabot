@@ -19,7 +19,7 @@ public abstract class Command
      */
     public boolean canExecute(String name)
     {
-        String cName = Main.configuration.getString("bot.prefix") + this.getName();
+        String cName = this.getFullName();
 
         if(Main.configuration.getBoolean("bot.ignoreCase")) {
             return cName.equalsIgnoreCase(name);
@@ -35,7 +35,7 @@ public abstract class Command
      */
     public String getHelp()
     {
-        String help = Main.configuration.getString("bot.prefix") + this.getName() +":\n"+
+        String help = this.getFullName() +":\n"+
                       "```\n"+
                       this.getDescription() +"\n"+
                       "```";
@@ -49,6 +49,16 @@ public abstract class Command
      * @return Command name.
      */
     public abstract String getName();
+
+    /**
+     * Returns full name (prefix + command name).
+     *
+     * @return Full command name.
+     */
+    public String getFullName()
+    {
+        return Main.configuration.getString("bot.prefix") + this.getName();
+    }
 
     /**
      * Returns command description.
