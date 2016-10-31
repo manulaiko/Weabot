@@ -46,6 +46,9 @@ public class HelpCommand extends Command
      */
     public String getDescription()
     {
-        return "Prints available commands";
+        return "Prints available commands\n"+
+               "\n"+
+               "Usage:\n"+
+               "    "+ Main.configuration.getString("bot.prefix") +"help";
     }
 }
