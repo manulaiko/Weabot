@@ -3,7 +3,6 @@ package com.manulaiko.weabot.commands;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-import com.manulaiko.tabitha.utils.Tools;
 import com.manulaiko.weabot.launcher.Main;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 

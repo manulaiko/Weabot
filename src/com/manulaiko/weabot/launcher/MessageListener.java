@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.manulaiko.tabitha.Console;
 import com.manulaiko.weabot.commands.Command;
 import com.manulaiko.weabot.commands.HelpCommand;
+import com.manulaiko.weabot.commands.WhatToDoCommand;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 
@@ -32,6 +33,7 @@ public class MessageListener extends ListenerAdapter
         super();
 
         this.commands.add(new HelpCommand());
+        this.commands.add(new WhatToDoCommand());
     }
 
     /**
