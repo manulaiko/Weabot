@@ -55,6 +55,15 @@ public class Main
     public static JDA jda;
 
     /**
+     * Message listener instance.
+     *
+     * Contains available commands and processes received messages.
+     *
+     * @var MessageListener Instance.
+     */
+    public static MessageListener messageListener;
+
+    /**
      * Main method.
      *
      * @param args Command line arguments.
@@ -97,7 +106,8 @@ public class Main
         try {
             Console.println("Initializing Weabot...");
 
-            JDABuilder builder = new JDABuilder();
+            Main.messageListener = new MessageListener();
+            JDABuilder builder   = new JDABuilder();
 
             if(Main.configuration.getBoolean("proxy.enabled")) {
                 builder.setProxy(
@@ -115,7 +125,7 @@ public class Main
             builder.setBotToken(token);
 
             Main.jda = builder.buildBlocking();
-            Main.jda.addEventListener(new MessageListener());
+            Main.jda.addEventListener(Main.messageListener);
         } catch(Exception e) {
             Console.println("Couldn't initialize Weabot!");
             Main.exit(e.getMessage());
