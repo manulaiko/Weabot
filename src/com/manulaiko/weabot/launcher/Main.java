@@ -27,7 +27,7 @@ public class Main
      *
      * @var Version.
      */
-    private static final String version = "0.0.0";
+    private static final String version = "1.0.0";
 
     /**
      * Configuration object.
