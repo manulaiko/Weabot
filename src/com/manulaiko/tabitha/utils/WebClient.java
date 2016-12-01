@@ -6,10 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Map;
 import java.util.HashMap;
 
 import com.manulaiko.tabitha.Console;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * Class for executing HTTP Request.
@@ -18,6 +20,60 @@ import com.manulaiko.tabitha.Console;
  */
 public class WebClient
 {
+    /**
+     * Auth user.
+     *
+     * @var Username.
+     */
+    private String _username = "";
+
+    /**
+     * Auth password.
+     *
+     * @var Password.
+     */
+    private String _password = "";
+
+    /**
+     * Auth type.
+     *
+     * @var Authentication type.
+     */
+    private String _auth = "";
+
+    /**
+     * Constructor.
+     *
+     * @param username Auth username.
+     * @param password Auth password.
+     * @param auth     Auth type.
+     */
+    public WebClient(String username, String password, String auth)
+    {
+        this._auth     = auth;
+        this._password = password;
+        this._username = username;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param username Auth username.
+     * @param password Auth password.
+     */
+    public WebClient(String username, String password)
+    {
+        this(username, password, "Basic");
+    }
+
+    /**
+     * Constructor.
+     */
+    public WebClient()
+    {
+        this("", "", "");
+    }
+
     /**
      * Executes an HTTP Request.
      *
@@ -28,14 +84,13 @@ public class WebClient
      *
      * @return Response string.
      */
-    public static String execute(String URL, String params, String method, Map<String, String> headers)
+    public String execute(String URL, String params, String method, Map<String, String> headers)
     {
         HttpURLConnection connection = null;
 
         try {
             //Create connection
-            URL url = new URL(URL);
-            connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpURLConnection) this.open(URL);
             connection.setRequestMethod(method);
 
             for(Map.Entry<String, String> header : headers.entrySet()) {
@@ -82,11 +137,11 @@ public class WebClient
      *
      * @return Response string.
      */
-    public static String post(String url, Map<String, String> params)
+    public String post(String url, Map<String, String> params)
     {
         String p = WebClient.parseParams(params);
 
-        return WebClient.execute(url, p, "POST", new HashMap<>());
+        return this.execute(url, p, "POST", new HashMap<>());
     }
 
     /**
@@ -97,11 +152,38 @@ public class WebClient
      *
      * @return Response string.
      */
-    public static String get(String url, Map<String, String> params)
+    public String get(String url, Map<String, String> params)
     {
         String p = WebClient.parseParams(params);
 
-        return WebClient.execute(url, p, "GET", new HashMap<>());
+        return this.execute(url, p, "GET", new HashMap<>());
+    }
+
+    /**
+     * Opens an URL connection.
+     *
+     * @param URL URL to open.
+     */
+    public URLConnection open(String URL)
+    {
+        try {
+            URL url = new URL(URL);
+            URLConnection connection = url.openConnection();
+
+            if(!this._auth.isEmpty()) {
+                String authStr = this._username +":"+ this._password;
+                String encoded = Base64.encodeBase64String(authStr.getBytes());
+
+                connection.setRequestProperty("Authorization", this._auth +" "+ encoded);
+            }
+
+            return connection;
+        } catch(Exception e) {
+            Console.println("Couldn't open URL "+ URL);
+            Console.println(e.getMessage());
+
+            return null;
+        }
     }
 
     /**
