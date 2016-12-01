@@ -61,7 +61,7 @@ public class HelpCommand extends Command
      */
     public String getDescription()
     {
-        return "Prints available commands\n"+
+        return "Prints available commands.\n"+
                "\n"+
                "Usage:\n"+
                "    "+ this.getFullName() +" ([command name])";

@@ -4,6 +4,11 @@ import com.manulaiko.tabitha.Configuration;
 import com.manulaiko.tabitha.Console;
 import com.manulaiko.tabitha.configuration.IConfiguration;
 import com.manulaiko.tabitha.exceptions.NotFound;
+import com.manulaiko.tabitha.utils.CommandPrompt;
+import com.manulaiko.weabot.launcher.commands.AddAdminCommand;
+import com.manulaiko.weabot.launcher.commands.AddModCommand;
+import com.manulaiko.weabot.launcher.commands.RemoveAdminCommand;
+import com.manulaiko.weabot.launcher.commands.RemoveModCommand;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 
@@ -64,6 +69,11 @@ public class Main
     public static MessageListener messageListener;
 
     /**
+     * Command prompt.
+     */
+    public static CommandPrompt commandPrompt;
+
+    /**
      * Main method.
      *
      * @param args Command line arguments.
@@ -78,6 +88,14 @@ public class Main
 
         // 2nd Stage: Initialize JDA
         Main.initializeJDA();
+
+        // 3rd Stage: Initialize command prompt
+        Main.commandPrompt = new CommandPrompt();
+        Main.commandPrompt.addCommand(new AddModCommand());
+        Main.commandPrompt.addCommand(new RemoveModCommand());
+        Main.commandPrompt.addCommand(new AddAdminCommand());
+        Main.commandPrompt.addCommand(new RemoveAdminCommand());
+        Main.commandPrompt.start();
     }
 
     /**

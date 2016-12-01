@@ -1,12 +1,12 @@
 package com.manulaiko.weabot.launcher;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import com.manulaiko.tabitha.Console;
-import com.manulaiko.weabot.commands.Command;
-import com.manulaiko.weabot.commands.HelpCommand;
-import com.manulaiko.weabot.commands.SearchAnimeCommand;
-import com.manulaiko.weabot.commands.WhatToDoCommand;
+import com.manulaiko.weabot.commands.*;
+import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 
@@ -36,6 +36,9 @@ public class MessageListener extends ListenerAdapter
         this.commands.add(new HelpCommand());
         this.commands.add(new WhatToDoCommand());
         this.commands.add(new SearchAnimeCommand());
+        this.commands.add(new AddImageSaveChannelCommand());
+        this.commands.add(new RemoveImageSaveChannelCommand());
+        this.commands.add(new ExecuteCommand());
     }
 
     /**
@@ -46,7 +49,10 @@ public class MessageListener extends ListenerAdapter
     @Override
     public void onMessageReceived(MessageReceivedEvent event)
     {
-        if(Main.configuration.getBoolean("core.printMessages")) {
+        if(
+            Main.configuration.getBoolean("core.printMessages") &&
+            !event.getMessage().getContent().isEmpty()
+        ) {
             Console.println("["+ event.getTextChannel().getName() +"] ("+ event.getAuthorName() +"): "+ event.getMessage().getContent());
         }
 
@@ -57,6 +63,35 @@ public class MessageListener extends ListenerAdapter
         this.commands.forEach((c)->{
             if(c.canExecute(command[0])) {
                 c.execute(event, command);
+            }
+        });
+
+        for(Message.Attachment a : event.getMessage().getAttachments()) {
+            if(!a.isImage()) {
+                continue;
+            }
+
+            this._saveImage(a, event.getTextChannel());
+        }
+    }
+
+    /**
+     * Saves an image.
+     *
+     * @param attachment Image attachment.
+     * @param channel    Channel where the image was posted.
+     */
+    private void _saveImage(Message.Attachment attachment, TextChannel channel)
+    {
+        Settings.saveImagesChannels.forEach((c, f)->{
+            if(c.getId().equals(channel.getId())) {
+                f.forEach((path)->{
+                    File image = new File(path.getAbsolutePath() + File.separator + attachment.getFileName());
+                    if(image.exists()) {
+                        image = new File(path.getAbsolutePath() + File.separator + System.currentTimeMillis() +"-"+ attachment.getFileName());
+                    }
+                    attachment.download(image);
+                });
             }
         });
     }
