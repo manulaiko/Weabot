@@ -1,28 +1,25 @@
 package com.manulaiko.tabitha;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import com.manulaiko.tabitha.exceptions.NotFound;
-import com.manulaiko.tabitha.exceptions.filesystem.FileIsDirectory;
-import com.manulaiko.tabitha.exceptions.configuration.UnsupportedType;
-import com.manulaiko.tabitha.filesystem.File;
 import com.manulaiko.tabitha.configuration.IConfiguration;
 import com.manulaiko.tabitha.configuration.IniConfiguration;
+import com.manulaiko.tabitha.configuration.PropertiesConfiguration;
+import com.manulaiko.tabitha.filesystem.File;
 
 /**
- * Configuration class
+ * Configuration class.
  *
  * This class offers helpers to read/write configuration files.
  *
  * Depending on the type of configuration file you'll need to call
  * a different load method:
- *  * .ini files: `loadIni(path)` returns {@see com.manulaiko.tabitha.configuration.IniConfiguration}
- *  * .properties files: `loadProperties(path)` returns {@see com.manulaiko.tabitha.configuration.PropertiesConfiguration}
- *  * .xml files: `loadXml(path)` returns {@see com.manulaiko.tabitha.configuration.XMLConfiguration}
- *  * .json files: `loadJson(path)` returns {@see com.manulaiko.tabitha.configuration.JSONConfiguration}
+ *  * `.ini` files: `loadIni(path)` returns `com.manulaiko.tabitha.configuration.IniConfiguration`.
+ *  * `.properties` files: `loadProperties(path)` returns `com.manulaiko.tabitha.configuration.PropertiesConfiguration`.
  *
- * Alternatively you can use the method {@see com.manulaiko.tabitha.Configuration#load} which accepts as
- * parameter the name of the configuration file, the returning object is an instance of {@see com.manulaiko.tabitha.configuration.IConfiguration}
+ * Alternatively you can use the method `load` which accepts as
+ * parameter the name of the configuration file, the returning object is an instance of `com.manulaiko.tabitha.configuration.IConfiguration`
  * and is instanced depending on file extension.
  *
  * @author Manulaiko <manulaiko@gmail.com>
@@ -30,18 +27,17 @@ import com.manulaiko.tabitha.configuration.IniConfiguration;
 public class Configuration
 {
     /**
-     * Loads a configuration file
+     * Loads a configuration file.
      *
-     * @param path Path to the file
+     * @param path Path to the file.
      *
-     * @return Configuration object instance
+     * @return Configuration object instance.
      *
-     * @throws NotFound        If configuration file does not exists
-     * @throws FileIsDirectory If `path` is a directory
-     * @throws UnsupportedType If the configuration file has an unsupported extension
-     * @throws IOException     If couldn't read configuration file
+     * @throws FileNotFoundException If configuration file does not exists.
+     * @throws Exception             If the configuration file has an unsupported extension.
+     * @throws IOException           If couldn't read configuration file.
      */
-    public static IConfiguration load(String path) throws NotFound, FileIsDirectory, UnsupportedType, IOException
+    public static IConfiguration load(String path) throws FileNotFoundException, IOException, Exception
     {
         File f = new File(path);
 
@@ -49,14 +45,10 @@ public class Configuration
 
         if(f.extension.equals("ini")) {
             cfg = new IniConfiguration();
-        /*} else if(f.extension.equals("properties")) {
+        } else if(f.extension.equals("properties")) {
             cfg = new PropertiesConfiguration();
-        } else if(f.extension.equals("xml")) {
-            cfg = new XMLConfiguration();
-        } else if(f.extension.equals("json")) {
-            cfg = new JSONConfiguration();*/
         } else {
-            throw new UnsupportedType(path);
+            throw new Exception(path);
         }
 
         cfg.parse(path);
@@ -65,17 +57,30 @@ public class Configuration
     }
 
     /**
-     * Loads a ini configuration file
+     * Loads a ini configuration file.
      *
-     * @return Configuration object instance
+     * @return Configuration object instance.
      *
-     * @throws NotFound        If configuration file does not exists
-     * @throws FileIsDirectory If `path` is a directory
-     * @throws UnsupportedType If the configuration file has an unsupported extension
-     * @throws IOException     If couldn't read configuration file
+     * @throws FileNotFoundException If configuration file does not exists.
+     * @throws Exception             If the configuration file has an unsupported extension.
+     * @throws IOException           If couldn't read configuration file.
      */
-    public static IniConfiguration loadIni(String path) throws NotFound, FileIsDirectory, UnsupportedType, IOException
+    public static IniConfiguration loadIni(String path) throws FileNotFoundException, IOException, Exception
     {
-        return (IniConfiguration) Configuration.load(path);
+        return (IniConfiguration)Configuration.load(path);
+    }
+
+    /**
+     * Loads a properties configuration file.
+     *
+     * @return Configuration object instance.
+     *
+     * @throws FileNotFoundException If configuration file does not exists.
+     * @throws Exception             If the configuration file has an unsupported extension.
+     * @throws IOException           If couldn't read configuration file.
+     */
+    public static PropertiesConfiguration loadProperties(String path) throws FileNotFoundException, IOException, Exception
+    {
+        return (PropertiesConfiguration)Configuration.load(path);
     }
 }

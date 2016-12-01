@@ -3,19 +3,19 @@ package com.manulaiko.tabitha.utils;
 import com.manulaiko.tabitha.Console;
 
 /**
- * Point class helper
+ * Point class helper.
  *
  * @author S7KYuuki
  */
-public class Point
+public class Point implements Cloneable
 {
     /**
-     * Adds 2 vectors
+     * Adds 2 points.
      *
-     * @param one Point 1
-     * @param two Point 2
+     * @param one Point 1.
+     * @param two Point 2.
      *
-     * @return Point 1 + Point 2
+     * @return Point 1 + Point 2.
      */
     public static Point plus(Point one, Point two)
     {
@@ -26,12 +26,12 @@ public class Point
     }
 
     /**
-     * Minus 2 vectors
+     * Minus 2 points.
      *
-     * @param one Point 1
-     * @param two Point 2
+     * @param one Point 1.
+     * @param two Point 2.
      *
-     * @return Point 1 - Point 2
+     * @return Point 1 - Point 2.
      */
     public static Point minus(Point one, Point two)
     {
@@ -42,17 +42,17 @@ public class Point
     }
 
     /**
-     * X Position
+     * X Position.
      */
     private int _x;
 
     /**
-     * Y Position
+     * Y Position.
      */
     private int _y;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public Point()
     {
@@ -60,10 +60,10 @@ public class Point
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param x X position
-     * @param y Y Position
+     * @param x X position.
+     * @param y Y Position.
      */
     public Point(int x, int y)
     {
@@ -72,9 +72,9 @@ public class Point
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param position X and Y position
+     * @param position X and Y position.
      */
     public Point(int position)
     {
@@ -83,9 +83,9 @@ public class Point
     }
 
     /**
-     * Returns X position
+     * Returns X position.
      *
-     * @return X position
+     * @return X position.
      */
     public int getX()
     {
@@ -93,9 +93,9 @@ public class Point
     }
 
     /**
-     * Returns Y position
+     * Returns Y position.
      *
-     * @return Y Position
+     * @return Y Position.
      */
     public int getY()
     {
@@ -103,9 +103,9 @@ public class Point
     }
 
     /**
-     * Sets X position
+     * Sets X position.
      *
-     * @param x New position
+     * @param x New position.
      */
     public void setX(int x)
     {
@@ -113,9 +113,9 @@ public class Point
     }
 
     /**
-     * Sets Y position
+     * Sets Y position.
      *
-     * @param y New position
+     * @param y New position.
      */
     public void setY(int y)
     {
@@ -123,9 +123,9 @@ public class Point
     }
 
     /**
-     * Returns a vector at 0:0
+     * Returns a point at 0:0.
      *
-     * @return Empty vector
+     * @return Empty vector.
      */
     public Point reset()
     {
@@ -133,11 +133,11 @@ public class Point
     }
 
     /**
-     * Checks the distance between this vector and another.
+     * Checks the distance between this point and another.
      *
      * @param point Point to calculate the distance.
      *
-     * @return The distance between this and Point.
+     * @return The distance between `this` and `point`.
      */
     public double distanceTo(Point point)
     {
@@ -153,7 +153,7 @@ public class Point
      * @param from Starting position.
      * @param to   The radius of the range.
      *
-     * @return True if this point is between `from` and `to`, false if not.
+     * @return `true` if this point is between `from` and `to`, `false` if not.
      */
     public boolean isInRange(Point from, Point to)
     {
@@ -167,9 +167,9 @@ public class Point
     }
 
     /**
-     * Parses the object to a string
+     * Parses the object to a string.
      *
-     * @return The vector as a String
+     * @return The vector as a String.
      */
     @Override
     public String toString()
@@ -178,11 +178,11 @@ public class Point
     }
 
     /**
-     * Checks if this vector is the same as obj
+     * Checks if this vector is the same as `obj`.
      *
-     * @param obj Point to check
+     * @param obj Point to check.
      *
-     * @return Whether this == obj
+     * @return `true` if `obj` is the same point as `this`, `false` if not.
      */
     @Override
     public boolean equals(Object obj)
@@ -191,8 +191,8 @@ public class Point
             Point v2d = (Point)obj;
 
             return (
-                v2d.getX() == this.getX() &&
-                v2d.getY() == this.getY()
+                    v2d.getX() == this.getX() &&
+                            v2d.getY() == this.getY()
             );
         }
 
@@ -200,13 +200,36 @@ public class Point
     }
 
     /**
-     * Hashes the vector
+     * Hashes the vector.
      *
-     * @return Hashed vector
+     * @return Hashed vector.
      */
     @Override
     public int hashCode()
     {
         return (this.getX() + " " + this.getY()).hashCode();
+    }
+
+    /**
+     * Clones and returns the object.
+     *
+     * @return Cloned object.
+     */
+    @Override
+    public Point clone()
+    {
+        try {
+            Point p = (Point)super.clone();
+
+            p._x = this._x;
+            p._y = this._y;
+
+            return p;
+        } catch(Exception e) {
+            Console.println("Couldn't clone point!");
+            Console.println(e.getMessage());
+
+            return null;
+        }
     }
 }

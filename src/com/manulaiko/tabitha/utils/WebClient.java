@@ -7,11 +7,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Base64;
 import java.util.Map;
 import java.util.HashMap;
 
 import com.manulaiko.tabitha.Console;
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * Class for executing HTTP Request.
@@ -172,7 +172,7 @@ public class WebClient
 
             if(!this._auth.isEmpty()) {
                 String authStr = this._username +":"+ this._password;
-                String encoded = Base64.encodeBase64String(authStr.getBytes());
+                String encoded = Base64.getEncoder().encodeToString(authStr.getBytes());
 
                 connection.setRequestProperty("Authorization", this._auth +" "+ encoded);
             }

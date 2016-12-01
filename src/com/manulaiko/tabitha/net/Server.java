@@ -13,7 +13,7 @@ import java.util.HashMap;
 import com.manulaiko.tabitha.Console;
 
 /**
- * Server class
+ * Server class.
  *
  * Used to start a socket server.
  *
@@ -21,21 +21,18 @@ import com.manulaiko.tabitha.Console;
  * port on which the server will listen for connections.
  *
  * When extending this class you must override the method
- * {@see com.manulaiko.tabitha.net.Server#run} that will
- * handle the connections.
+ * `run` that will handle the connections.
  *
- * To add a new socket connection use the method
- * {@see com.manulaiko.tabitha.net.Server#addConnection} that
- * accepts as parameter an object of type {@see com.manulaiko.tabitha.net.Connection}.
+ * To add a new socket connection use the method `addConnection` that
+ * accepts as parameter an object of type `com.manulaiko.tabitha.net.Connection`.
  *
- * The method {@see com.manulaiko.tabitha.net.Server#getConnections} returns all
- * connections.
+ * The method `getConnections` returns all connections.
  *
- * The method {@see com.manulaiko.tabitha.net.Server#start} starts the server.
- * The method {@see com.manulaiko.tabitha.net.Server#stop} stops the server
- * the method {@see com.manulaiko.tabitha.net.Server#showStatus} shows the status of the server
+ * The method `start` starts the server.
+ * The method `stop` stops the server
+ * the method `showStatus` shows the status of the server
  *
- * Example
+ * Example:
  *
  *     public class TestServer extends Server
  *     {
@@ -65,56 +62,55 @@ import com.manulaiko.tabitha.Console;
 public abstract class Server implements Runnable
 {
     /**
-     * Server port
+     * Server port.
      */
     protected short _port;
 
     /**
-     * Whether server is running or not
+     * Whether server is running or not.
      */
     protected boolean _isRunning = false;
 
     /**
-     * Start time
+     * Start time.
      */
     protected Instant _startTime;
 
     /**
-     * Stop time
+     * Stop time.
      */
     protected Instant _stopTime;
 
     /**
-     * Server socket
+     * Server socket.
      */
     protected ServerSocket _server;
 
     /**
-     * Thread instance
+     * Thread instance.
      */
     protected Thread _thread;
 
     /**
-     * Connections array
+     * Connections array.
      */
     protected HashMap<Integer, Connection> _connections = new HashMap<>();
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param port Port on which server will listen
+     * @param port Port on which server will listen.
      */
     public Server(short port)
     {
-        this._port = port;
-
+        this._port   = port;
         this._thread = new Thread(this);
     }
 
     /**
-     * Starts the server
+     * Starts the server.
      *
-     * @throws IOException If the server failed to start
+     * @throws IOException If the server failed to start.
      */
     public void start() throws IOException
     {
@@ -127,9 +123,9 @@ public abstract class Server implements Runnable
     }
 
     /**
-     * Stops the server
+     * Stops the server.
      *
-     * @throws IOException If the server failed to stop
+     * @throws IOException If the server failed to stop.
      */
     public void stop() throws IOException
     {
@@ -142,7 +138,7 @@ public abstract class Server implements Runnable
     }
 
     /**
-     * Shows the status of the server
+     * Shows the status of the server.
      */
     public void showStatus()
     {
@@ -165,11 +161,11 @@ public abstract class Server implements Runnable
     }
 
     /**
-     * Accepts a connection
+     * Accepts a connection.
      *
-     * @return The socket of the connection
+     * @return The socket of the connection.
      *
-     * @throws IOException If failed to return the socket
+     * @throws IOException If failed to return the socket.
      */
     public Socket acceptConnection() throws IOException
     {
@@ -177,11 +173,11 @@ public abstract class Server implements Runnable
     }
 
     /**
-     * Adds a connection to the array
+     * Adds a connection to the array.
      *
-     * @param connection Connection to add
+     * @param connection Connection to add.
      *
-     * @return Key of the connection on the array
+     * @return Key of the connection on the array.
      */
     public int addConnection(Connection connection)
     {
@@ -195,7 +191,7 @@ public abstract class Server implements Runnable
     }
 
     /**
-     * Returns all connections
+     * Returns all connections.
      */
     public HashMap<Integer, Connection> getAllConnections()
     {
@@ -203,7 +199,7 @@ public abstract class Server implements Runnable
     }
 
     /**
-     * Checks whether the thread is running or not
+     * Checks whether the thread is running or not.
      */
     public void run()
     {
@@ -213,14 +209,14 @@ public abstract class Server implements Runnable
     }
 
     /**
-     * Performs the action of the thread
+     * Performs the action of the thread.
      */
     public abstract void onRunning();
 
     /**
-     * Closes a connection
+     * Closes a connection.
      *
-     * @param id Connection
+     * @param id Connection.
      */
     public abstract void finishConnection(int id);
 }

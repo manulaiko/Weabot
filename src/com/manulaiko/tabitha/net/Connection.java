@@ -1,7 +1,5 @@
 package com.manulaiko.tabitha.net;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import java.net.Socket;
@@ -9,33 +7,28 @@ import java.net.Socket;
 import com.manulaiko.tabitha.Console;
 
 /**
- * Connection class
+ * Connection class.
  *
- * This class is used when the server accepts a connection
+ * This class is used when the server accepts a connection.
  *
  * @author Manulaiko <manulaiko@gmail.com>
  */
 public abstract class Connection extends Thread
 {
     /**
-     * Connection ID
+     * Connection ID.
      */
     public int id;
 
     /**
-     * Connection socket
+     * Connection socket.
      */
     protected Socket _socket;
 
     /**
-     * Thread object
-     */
-    protected Thread _thread;
-
-    /**
-     * Constructor
+     * Constructor.
      *
-     * @param socket Socket connection
+     * @param socket Socket connection.
      */
     public Connection(Socket socket)
     {
@@ -43,7 +36,7 @@ public abstract class Connection extends Thread
     }
 
     /**
-     * Closes the socket
+     * Closes the socket.
      */
     public void close()
     {

@@ -5,23 +5,23 @@ import com.manulaiko.tabitha.Console;
 import java.util.ArrayList;
 
 /**
- * Command Prompt class
+ * Command Prompt class.
  *
- * Offers an easy way to interact with the application with the use of commands
+ * Offers an easy way to interact with the application with the use of commands.
  *
  * @author Manulaiko <manulaiko@gmail.com>
  */
 public class CommandPrompt
 {
     /**
-     * Commands list
+     * Commands list.
      */
-    private ArrayList<ICommand> _commands = new ArrayList<ICommand>();
+    private ArrayList<ICommand> _commands = new ArrayList<>();
 
     /**
-     * Adds a command to the list
+     * Adds a command to the list.
      *
-     * @param command Command to add
+     * @param command Command to add.
      */
     public void addCommand(ICommand command)
     {
@@ -29,7 +29,7 @@ public class CommandPrompt
     }
 
     /**
-     * Starts the infinite loop for reading commands
+     * Starts the infinite loop for reading commands.
      */
     public void start()
     {
@@ -46,7 +46,7 @@ public class CommandPrompt
     }
 
     /**
-     * Prints available commands
+     * Prints available commands.
      */
     public void printAvailableCommands()
     {
@@ -62,9 +62,9 @@ public class CommandPrompt
     }
 
     /**
-     * Executes an specific command
+     * Executes an specific command.
      *
-     * @param command Command to execute
+     * @param command Command to execute.
      */
     public void execute(String[] command)
     {

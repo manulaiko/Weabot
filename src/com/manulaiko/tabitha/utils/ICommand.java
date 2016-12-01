@@ -1,39 +1,39 @@
 package com.manulaiko.tabitha.utils;
 
 /**
- * Command interface
+ * Command interface.
  *
  * @author Manulaiko <manulaiko@gmail.com>
  */
 public interface ICommand
 {
     /**
-     * Executes the command
+     * Executes the command.
      *
-     * @param command Command arguments
+     * @param command Command arguments.
      */
     void execute(String[] command);
 
     /**
-     * Checks whether this command can execute 'name' command
+     * Checks whether this command can execute `name` command.
      *
-     * @param name Command name to check
+     * @param name Command name to check.
      *
-     * @return Whether this command can execute 'name'
+     * @return Whether this command can execute `name`.
      */
     boolean canExecute(String name);
 
     /**
-     * Returns command name
+     * Returns command name.
      *
-     * @return Command name
+     * @return Command name.
      */
     String getName();
 
     /**
-     * Returns command description
+     * Returns command description.
      *
-     * @return Command description
+     * @return Command description.
      */
     String getDescription();
 }

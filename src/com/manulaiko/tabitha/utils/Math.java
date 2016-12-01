@@ -1,7 +1,7 @@
 package com.manulaiko.tabitha.utils;
 
 /**
- * Math utils collection
+ * Math utils collection.
  *
  * Collection of different math helpers.
  *
@@ -10,31 +10,11 @@ package com.manulaiko.tabitha.utils;
 public class Math
 {
     /**
+     * Calculates and returns the square of value.
      *
-     * @param value
-     * @param min
-     * @param max
+     * @param value Value to calculate.
      *
-     * @return
-     */
-    public static short clamp(short value, short min, short max)
-    {
-        if(value < min) {
-            return min;
-        }
-        if(value > max) {
-            return max;
-        }
-
-        return value;
-    }
-
-    /**
-     * Calculates and returns the square of value
-     *
-     * @param value Value to calculate
-     *
-     * @return Squared value
+     * @return Squared value.
      */
     public static double sqr(double value)
     {
@@ -42,12 +22,12 @@ public class Math
     }
 
     /**
-     * Calculates and returns the hypotenuse of x and y
+     * Calculates and returns the hypotenuse of `x` and `y`.
      *
-     * @param x X Value
-     * @param y Y Value
+     * @param x X Value.
+     * @param y Y Value.
      *
-     * @return Hypotenuse of X and Y
+     * @return Hypotenuse of `x` and `y`.
      */
     public static double hypotenuse(double x, double y)
     {

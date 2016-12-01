@@ -2,23 +2,18 @@ package com.manulaiko.tabitha.filesystem;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.function.Consumer;
 
 import com.manulaiko.tabitha.Console;
-import com.manulaiko.tabitha.exceptions.NotFound;
-import com.manulaiko.tabitha.exceptions.filesystem.FileAlreadyExists;
-import com.manulaiko.tabitha.exceptions.filesystem.FileIsDirectory;
-import com.manulaiko.tabitha.exceptions.filesystem.DirectoryIsFile;
 
 /**
- * File object
+ * File object.
  *
  * This object can be used to read/write easily to a file.
  *
@@ -33,7 +28,7 @@ import com.manulaiko.tabitha.exceptions.filesystem.DirectoryIsFile;
  *     } catch(FileAlreadyExists e) {
  *         file = new File("/test");
  *     }
- *     
+ *
  *     Console.println(file.getContent());
  *     file.append("Hello ");
  *     file.appendLine("world!");
@@ -46,35 +41,34 @@ public class File
     ///////////////////////////////////
     // Static methods and properties //
     ///////////////////////////////////
+
     /**
-     * Makes a file on the filesystem
+     * Makes a file on the filesystem.
      *
-     * @param path Path to file to create
+     * @param path Path to file to create.
      *
-     * @return Created file object
+     * @return Created file object.
      *
-     * @throws com.manulaiko.tabitha.exceptions.filesystem.FileAlreadyExists If path already exists
-     * @throws com.manulaiko.tabitha.exceptions.filesystem.FileIsDirectory  If path is an existing directory
-     * @throws IOException
+     * @throws FileAlreadyExistsException If path already exists.
+     * @throws IOException                If something goes wrong.
      */
-    public static File make(String path) throws FileAlreadyExists, FileIsDirectory, IOException
+    public static File make(String path) throws FileAlreadyExistsException, IOException
     {
         path = Paths.get(path).toAbsolutePath().normalize().toString();
 
         java.io.File f = new java.io.File(path);
-        
-        if(f.exists()) {
-            throw new FileAlreadyExists(path);
+
+        if(
+            f.exists() ||
+            f.isDirectory()
+        ) {
+            throw new FileAlreadyExistsException(path);
         }
 
-        if(f.isDirectory()) {
-            throw new FileIsDirectory(path);
-        }
-        
         if(f.createNewFile()) {
             try {
                 return new File(path);
-            } catch(NotFound e) {
+            } catch(FileNotFoundException e) {
                 Console.println(e.getMessage());
             }
         }
@@ -82,11 +76,11 @@ public class File
     }
 
     /**
-     * Checks wether a file exists or not
+     * Checks whether a file exists or not.
      *
-     * @param path Path to the file
+     * @param path Path to the file.
      *
-     * @return Whether path exists and is a file
+     * @return Whether path exists and is a file.
      */
     public static boolean exists(String path)
     {
@@ -94,11 +88,10 @@ public class File
 
         java.io.File f = new java.io.File(path);
 
-        if(f.exists() && f.isFile())  {
-            return true;
-        }
-
-        return false;
+        return (
+            f.exists() &&
+            f.isFile()
+        );
     }
 
     ///////////////////////////////////////
@@ -106,61 +99,63 @@ public class File
     ///////////////////////////////////////
 
     /**
-     * File path
+     * File path.
      */
     public String path = "";
 
     /**
-     * File name
+     * File name.
      */
     public String name = "";
 
     /**
-     * File extension
+     * File extension.
      */
     public String extension = "";
 
     /**
-     * File lines
+     * File lines.
      */
     public Vector<String> lines = null;
 
     /**
-     * Reader object
+     * Reader object.
      */
     private BufferedReader _reader = null;
 
     /**
-     * Writer object
+     * Writer object.
      */
     private BufferedWriter _writer = null;
 
     /**
-     * File object
+     * File object.
      */
     private java.io.File _file = null;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param path Path to file
-     * @throws IOException 
+     * @param path Path to file.
+     *
+     * @throws FileNotFoundException If the file doesn't exist.
+     * @throws IOException           If file is a directory.
      */
-    public File(String path) throws FileIsDirectory, NotFound, IOException
+    public File(String path) throws FileNotFoundException, IOException
     {
         path = Paths.get(path).toAbsolutePath().normalize().toString();
 
-        java.io.File f = new java.io.File(path);
+        java.io.File file = new java.io.File(path);
 
-        if(!f.exists()) {
-            throw new NotFound("file", path);
-        } else if(f.isDirectory()) {
-            throw new FileIsDirectory(path);
+        if(!file.exists()) {
+            throw new FileNotFoundException(path);
+        } else if(file.isDirectory()) {
+            throw new IOException("`"+ path +"` is a directory!");
         }
 
+        String fullName = "";
         int    idx      = path.replaceAll("\\\\", "/")
                               .lastIndexOf("/");
-        String fullName = "";
 
         if(idx >= 0) {
             fullName = path.substring(idx + 1);
@@ -179,22 +174,22 @@ public class File
         }
 
         this.path  = path;
-        this._file = f;
+        this._file = file;
     }
 
     /**
-     * Returns file's directory object
+     * Returns file's directory object.
      *
-     * @return Directory on which file is located
+     * @return Directory on which file is located.
      */
-    public Directory getDirectory() throws NotFound
+    public Directory getDirectory()
     {
         int i = this.path.lastIndexOf(this.name +"."+ this.extension);
 
         if(i <= 0) {
             try {
                 return new Directory(Paths.get(".").toAbsolutePath().normalize().toString());
-            } catch(DirectoryIsFile e) {
+            } catch(IOException e) {
                 Console.println(e.getMessage());
             }
         }
@@ -203,7 +198,7 @@ public class File
 
         try {
             return new Directory(dir);
-        } catch(DirectoryIsFile e) {
+        } catch(IOException e) {
             Console.println(e.getMessage());
         }
 
@@ -211,18 +206,19 @@ public class File
     }
 
     /**
-     * Returns a single line of the file
+     * Returns a single line of the file.
      *
-     * @param line Line number
+     * @param line Line number.
      *
-     * @return Line content
-     * @throws IOException 
+     * @return Line content.
+     *
+     * @throws IOException If couldn't read the file.
      */
     public String getLine(int line) throws IOException
     {
         String l = "";
         int    i = 0;
-        
+
         while((l = this._reader.readLine()) != null) {
             if(i == line) {
                 break;
@@ -230,25 +226,24 @@ public class File
                 i++;
             }
         }
-        
+
         return l;
     }
-    
+
     /**
-     * Returns all lines of the file
-     * 
-     * @return File content
-     * @throws IOException 
+     * Returns all lines of the file.
+     *
+     * @return File content.
+     *
+     * @throws IOException If couldn't read file.
      */
     public ArrayList<String> getAllLines() throws IOException
     {
-        ArrayList<String> lines = new ArrayList();
+        ArrayList<String> lines = new ArrayList<>();
 
         Files.lines(Paths.get(this._file.getAbsolutePath()))
-             .forEach(s-> {
-                 lines.add(s);
-             });
-        
+             .forEach(lines::add);
+
         return lines;
     }
 }
