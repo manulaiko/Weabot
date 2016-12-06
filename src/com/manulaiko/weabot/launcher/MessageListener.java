@@ -84,15 +84,24 @@ public class MessageListener extends ListenerAdapter
     private void _saveImage(Message.Attachment attachment, TextChannel channel)
     {
         Settings.saveImagesChannels.forEach((c, f)->{
-            if(c.getId().equals(channel.getId())) {
-                f.forEach((path)->{
-                    File image = new File(path.getAbsolutePath() + File.separator + attachment.getFileName());
-                    if(image.exists()) {
-                        image = new File(path.getAbsolutePath() + File.separator + System.currentTimeMillis() +"-"+ attachment.getFileName());
+            Thread t = new Thread()
+            {
+                public void run()
+                {
+                    if(!c.getId().equals(channel.getId())) {
+                        return;
                     }
-                    attachment.download(image);
-                });
-            }
+
+                    f.forEach((path)->{
+                        File image = new File(path.getAbsolutePath() + File.separator + attachment.getFileName());
+                        if(image.exists()) {
+                            image = new File(path.getAbsolutePath() + File.separator + System.currentTimeMillis() + "-" + attachment.getFileName());
+                        }
+                        attachment.download(image);
+                    });
+                }
+            };
+            t.start();
         });
     }
 }
