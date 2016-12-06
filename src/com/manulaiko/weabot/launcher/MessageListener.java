@@ -40,6 +40,7 @@ public class MessageListener extends ListenerAdapter
         this.commands.add(new RemoveImageSaveChannelCommand());
         this.commands.add(new ExecuteCommand());
         this.commands.add(new PetCommand());
+        this.commands.add(new TakeASeatCommand());
     }
 
     /**
