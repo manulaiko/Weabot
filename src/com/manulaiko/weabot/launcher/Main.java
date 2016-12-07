@@ -6,10 +6,7 @@ import com.manulaiko.tabitha.Configuration;
 import com.manulaiko.tabitha.Console;
 import com.manulaiko.tabitha.configuration.IConfiguration;
 import com.manulaiko.tabitha.utils.CommandPrompt;
-import com.manulaiko.weabot.launcher.commands.AddAdminCommand;
-import com.manulaiko.weabot.launcher.commands.AddModCommand;
-import com.manulaiko.weabot.launcher.commands.RemoveAdminCommand;
-import com.manulaiko.weabot.launcher.commands.RemoveModCommand;
+import com.manulaiko.weabot.launcher.commands.*;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 
@@ -97,6 +94,7 @@ public class Main
         Main.commandPrompt.addCommand(new RemoveModCommand());
         Main.commandPrompt.addCommand(new AddAdminCommand());
         Main.commandPrompt.addCommand(new RemoveAdminCommand());
+        Main.commandPrompt.addCommand(new ReloadConfiguration());
         Main.commandPrompt.start();
     }
 
