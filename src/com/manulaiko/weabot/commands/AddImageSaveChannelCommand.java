@@ -3,6 +3,7 @@ package com.manulaiko.weabot.commands;
 import java.io.File;
 import java.util.ArrayList;
 
+import com.manulaiko.tabitha.Console;
 import com.manulaiko.weabot.launcher.Settings;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
@@ -40,6 +41,8 @@ public class AddImageSaveChannelCommand extends Command
 
         File f = new File(args[2]);
         if(!f.exists()) {
+            Console.debug("Directories for `"+ f.getAbsolutePath() +"` created!");
+
             f.mkdirs();
         }
         if(f.isFile()) {
@@ -62,8 +65,8 @@ public class AddImageSaveChannelCommand extends Command
             return;
         }
 
-        for(TextChannel c : Settings.saveImagesChannels.keySet()) {
-            if(c.getName().equalsIgnoreCase(channel.getName())) {
+        for(String c : Settings.saveImagesChannels.keySet()) {
+            if(c.equalsIgnoreCase(channel.getName())) {
                 Settings.saveImagesChannels.get(c).add(f);
                 event.getChannel()
                      .sendMessage("From now over, all images posted in `"+ channel.getName() +"` will also be saved in `"+ f.getAbsolutePath() +"`");
@@ -75,7 +78,7 @@ public class AddImageSaveChannelCommand extends Command
         ArrayList<File> array = new ArrayList<>();
         array.add(f);
 
-        Settings.saveImagesChannels.put(channel, array);
+        Settings.saveImagesChannels.put(channel.getName(), array);
 
         event.getChannel()
              .sendMessage("From now over, all images posted in `"+ channel.getName() +"` will be saved in `"+ f.getAbsolutePath() +"`");

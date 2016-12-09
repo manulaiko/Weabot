@@ -90,14 +90,14 @@ public class MessageListener extends ListenerAdapter
             {
                 public void run()
                 {
-                    if(!c.getId().equals(channel.getId())) {
+                    if(!c.equals(channel.getName())) {
                         return;
                     }
 
                     f.forEach((path)->{
-                        File image = new File(path.getAbsolutePath() + File.separator + attachment.getFileName());
+                        File image = new File(path.getAbsolutePath() + Main.separator() + attachment.getFileName());
                         if(image.exists()) {
-                            image = new File(path.getAbsolutePath() + File.separator + System.currentTimeMillis() + "-" + attachment.getFileName());
+                            image = new File(path.getAbsolutePath() + Main.separator() + System.currentTimeMillis() + "-" + attachment.getFileName());
                         }
                         attachment.download(image);
                     });
