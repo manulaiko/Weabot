@@ -25,6 +25,12 @@ public class StatsCommands extends Command
      */
     public void execute(MessageReceivedEvent event, String[] args)
     {
+        if(!Settings.isAdminOrMod(event.getAuthor())) {
+            event.getTextChannel()
+                 .sendMessage("This command can only be used by administrators or moderators!");
+
+            return;
+        }
         String message = "";
 
         message += "Running for: "+ Main.getRuntime() +"\n";
