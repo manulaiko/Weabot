@@ -26,7 +26,7 @@ public class Main
      *
      * @var Version.
      */
-    private static final String version = "1.2.0";
+    private static final String version = "1.2.1";
 
     /**
      * Configuration object.
@@ -117,7 +117,7 @@ public class Main
             Main.configuration = Configuration.load(Main.configurationFileLocation);
 
             String saveImages = Main.configuration.getString("core.saveImages");
-            for(String s : saveImages.split("|")) {
+            for(String s : saveImages.split("\\|")) {
                 if(s.isEmpty()) {
                     continue;
                 }
