@@ -41,6 +41,7 @@ public class MessageListener extends ListenerAdapter
         this.commands.add(new ExecuteCommand());
         this.commands.add(new PetCommand());
         this.commands.add(new TakeASeatCommand());
+        this.commands.add(new GropeCommand());
         this.commands.add(new StatsCommands());
     }
 
