@@ -41,6 +41,7 @@ public class MessageListener extends ListenerAdapter
         this.commands.add(new ExecuteCommand());
         this.commands.add(new PetCommand());
         this.commands.add(new TakeASeatCommand());
+        this.commands.add(new StatsCommands());
     }
 
     /**
@@ -55,7 +56,7 @@ public class MessageListener extends ListenerAdapter
             Main.configuration.getBoolean("core.printMessages") &&
             !event.getMessage().getContent().isEmpty()
         ) {
-            Console.println("["+ event.getTextChannel().getName() +"] ("+ event.getAuthorName() +"): "+ event.getMessage().getContent());
+            Console.println("["+ event.getGuild().getName() +"#"+ event.getTextChannel().getName() +"] ("+ event.getAuthorName() +"): "+ event.getMessage().getContent());
         }
 
         String[] command = event.getMessage()

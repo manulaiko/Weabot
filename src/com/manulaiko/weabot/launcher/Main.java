@@ -74,6 +74,11 @@ public class Main
     public static CommandPrompt commandPrompt;
 
     /**
+     * Start time.
+     */
+    public static final long start = System.currentTimeMillis();
+
+    /**
      * Main method.
      *
      * @param args Command line arguments.
@@ -234,5 +239,26 @@ public class Main
         }
 
         return separator;
+    }
+
+    /**
+     * Returns run time.
+     *
+     * @return Run time.
+     */
+    public static String getRuntime()
+    {
+        long millis = System.currentTimeMillis() - Main.start;
+
+        long second = (millis / 1000) % 60;
+        long minute = (millis / (1000 * 60)) % 60;
+        long hour   = (millis / (1000 * 60 * 60)) % 24;
+
+        String runtime = String.format("%02d minutes and %02d seconds", minute, second);
+        if(hour > 0) {
+            runtime = String.format("%02d hours %02d minutes and %02d seconds", hour, minute, second);
+        }
+
+        return runtime;
     }
 }
