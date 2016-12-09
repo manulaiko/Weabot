@@ -26,7 +26,7 @@ public class Settings
     /**
      * Channels to save images list.
      */
-    public static final HashMap<TextChannel, ArrayList<File>> saveImagesChannels = new HashMap<>();
+    public static final HashMap<String, ArrayList<File>> saveImagesChannels = new HashMap<>();
 
     /**
      * Checks whether an user is administrator or moderator.

@@ -40,8 +40,8 @@ public class RemoveImageSaveChannelCommand extends Command
             return;
         }
 
-        for(TextChannel c : Settings.saveImagesChannels.keySet()) {
-            if(c.getName().equalsIgnoreCase(args[1])) {
+        for(String c : Settings.saveImagesChannels.keySet()) {
+            if(c.equalsIgnoreCase(args[1])) {
                 Settings.saveImagesChannels.remove(c);
                 event.getChannel()
                      .sendMessage("From now over, the images posted on `"+ args[1] +"` won't be saved!");

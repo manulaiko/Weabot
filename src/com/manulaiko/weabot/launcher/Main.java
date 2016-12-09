@@ -1,6 +1,8 @@
 package com.manulaiko.weabot.launcher;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 import com.manulaiko.tabitha.Configuration;
 import com.manulaiko.tabitha.Console;
@@ -24,7 +26,7 @@ public class Main
      *
      * @var Version.
      */
-    private static final String version = "1.1.0";
+    private static final String version = "1.2.0";
 
     /**
      * Configuration object.
@@ -72,6 +74,11 @@ public class Main
     public static CommandPrompt commandPrompt;
 
     /**
+     * Start time.
+     */
+    public static final long start = System.currentTimeMillis();
+
+    /**
      * Main method.
      *
      * @param args Command line arguments.
@@ -108,11 +115,57 @@ public class Main
             Console.println("Stage 1: Reading configuration file...");
 
             Main.configuration = Configuration.load(Main.configurationFileLocation);
+
+            String saveImages = Main.configuration.getString("core.saveImages");
+            for(String s : saveImages.split("|")) {
+                if(s.isEmpty()) {
+                    continue;
+                }
+
+                String i[] = s.split(";");
+                String channels[] = i[0].split(",");
+                String paths[]    = i[1].split(",");
+
+                Main._addSaveImageFromChannels(channels, paths);
+            }
         } catch(FileNotFoundException e) {
             Main.exit("Be sure that the configuration file is located in `"+ Main.configurationFileLocation +"`");
         } catch(Exception e) {
             Console.println("There was a problem reading configuration file.");
             Main.exit(e.getMessage());
+        }
+    }
+
+    /**
+     * Adds various channels to the save image list.
+     *
+     * @param channels Channels to add.
+     * @param paths    Paths where the images will be saved.
+     */
+    private static void _addSaveImageFromChannels(String[] channels, String[] paths)
+    {
+        for(String channel : channels) {
+            for(String path : paths) {
+                File f = new File(path);
+                if(!f.exists()) {
+                    Console.debug("Directories for `"+ f.getAbsolutePath() +"` created!");
+
+                    f.mkdirs();
+                }
+                if(f.isFile()) {
+                    Console.println(path +" is a file!");
+
+                    continue;
+                }
+
+                if(!Settings.saveImagesChannels.containsKey(channel)) {
+                    Settings.saveImagesChannels.put(channel, new ArrayList<>());
+                }
+
+                Settings.saveImagesChannels.get(channel).add(f);
+
+                Console.debug("Images from `"+ channel +"` will be saved on `"+ f.getAbsolutePath() +"`");
+            }
         }
     }
 
@@ -171,5 +224,41 @@ public class Main
     public static void exit(String message)
     {
         Main.exit(message, 0);
+    }
+
+    /**
+     * Winshit's path parser.
+     *
+     * @return Path separator.
+     */
+    public static String separator()
+    {
+        String separator = "/";
+        if(System.getProperty("os.name").contains("Windows")) {
+            separator = "\\";
+        }
+
+        return separator;
+    }
+
+    /**
+     * Returns run time.
+     *
+     * @return Run time.
+     */
+    public static String getRuntime()
+    {
+        long millis = System.currentTimeMillis() - Main.start;
+
+        long second = (millis / 1000) % 60;
+        long minute = (millis / (1000 * 60)) % 60;
+        long hour   = (millis / (1000 * 60 * 60)) % 24;
+
+        String runtime = String.format("%02d minutes and %02d seconds", minute, second);
+        if(hour > 0) {
+            runtime = String.format("%02d hours %02d minutes and %02d seconds", hour, minute, second);
+        }
+
+        return runtime;
     }
 }
