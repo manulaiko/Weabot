@@ -185,6 +185,8 @@ public class Main
                         Main.configuration.getString("proxy.host"),
                         Main.configuration.getInt("proxy.port")
                 );
+                System.setProperty("http.proxyHost", Main.configuration.getString("proxy.host"));
+                System.setProperty("http.proxyPort", Main.configuration.getString("proxy.port"));
             }
 
             String token = Main.configuration.getString("core.token");
