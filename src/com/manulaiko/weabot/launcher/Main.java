@@ -2,17 +2,10 @@ package com.manulaiko.weabot.launcher;
 
 import java.io.FileNotFoundException;
 
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
-
 import com.manulaiko.tabitha.Configuration;
 import com.manulaiko.tabitha.Console;
 import com.manulaiko.tabitha.configuration.IConfiguration;
 import com.manulaiko.tabitha.utils.CommandPrompt;
-
-import com.manulaiko.weabot.listerners.MessageListener;
 
 /**
  * Weabot main class
@@ -178,7 +171,6 @@ public class Main
      */
     public static void loadWeabot(boolean exit)
     {
-        JDA    jda         = null;
         String accountType = Main.configuration.getString("core.account_type");
 
         try {
