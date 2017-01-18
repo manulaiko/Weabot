@@ -1,5 +1,8 @@
 package com.manulaiko.weabot.launcher;
 
+import java.util.HashMap;
+
+import com.manulaiko.weabot.commands.ICommand;
 import com.manulaiko.weabot.listerners.MessageListener;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -21,6 +24,13 @@ public class Weabot
     public JDA jda;
 
     /**
+     * Bot commands.
+     *
+     * Commands that the bot can execute.
+     */
+    public HashMap<String, ICommand> commands = new HashMap<>();
+
+    /**
      * Constructor.
      *
      * @param token Bot token.
@@ -29,7 +39,7 @@ public class Weabot
     {
         this.jda = this._loadBotAccount(token);
 
-        this._addListeners();
+        this.init();
     }
 
     /**
@@ -42,7 +52,7 @@ public class Weabot
     {
         this.jda = this._loadUserAccount(username, password);
 
-        this._addListeners();
+        this.init();
     }
 
     /**
@@ -81,6 +91,15 @@ public class Weabot
     }
 
     /**
+     * Initializes the bot.
+     */
+    private void init()
+    {
+        this._addListeners();
+        this._addCommands();
+    }
+
+    /**
      * Adds the listeners to the JDA instance.
      */
     private void _addListeners()
@@ -92,5 +111,12 @@ public class Weabot
         for(ListenerAdapter l : listeners) {
             this.jda.addEventListener(l);
         }
+    }
+
+    /**
+     * Adds the commands to the array.
+     */
+    private void _addCommands()
+    {
     }
 }
