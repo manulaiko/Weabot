@@ -2,13 +2,17 @@ package com.manulaiko.weabot.launcher;
 
 import java.io.FileNotFoundException;
 
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
+
 import com.manulaiko.tabitha.Configuration;
 import com.manulaiko.tabitha.Console;
 import com.manulaiko.tabitha.configuration.IConfiguration;
 import com.manulaiko.tabitha.utils.CommandPrompt;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
+
+import com.manulaiko.weabot.listerners.MessageListener;
 
 /**
  * Weabot main class
@@ -45,11 +49,9 @@ public class Main
     public static Database database;
 
     /**
-     * JDA instance.
-     *
-     * The instance of the JDA library used for interacting with Discord API.
+     * Weabot object.
      */
-    public static JDA jda;
+    public static Weabot weabot;
 
     /**
      * Configuration file location.
@@ -92,8 +94,8 @@ public class Main
         // 2nd Stage: Load the SQLite Database.
         Main.loadDatabase(true);
 
-        // 3rd Stage: Initialize JDA.
-        Main.loadJDA(true);
+        // 3rd Stage: Initialize Weabot.
+        Main.loadWeabot(true);
 
         // 3rd Stage: Initialize command prompt
         Main.commandPrompt = new CommandPrompt();
@@ -170,25 +172,28 @@ public class Main
     }
 
     /**
-     * Initializes JDA.
+     * Initializes Weabot.
      *
      * @param exit Whether to exit or not in a failed attempt to initialize JDA
      */
-    public static void loadJDA(boolean exit)
+    public static void loadWeabot(boolean exit)
     {
         JDA    jda         = null;
         String accountType = Main.configuration.getString("core.account_type");
 
         try {
             if(accountType.equalsIgnoreCase("bot")) {
-                jda = Main._loadBotAccount();
+                Main.weabot = new Weabot(Main.configuration.getString("bot.token"));
             }
 
             if(accountType.equalsIgnoreCase("user")) {
-                jda = Main._loadUserAccount();
+                Main.weabot = new Weabot(
+                        Main.configuration.getString("user.name"),
+                        Main.configuration.getString("user.password")
+                );
             }
         } catch(Exception e) {
-            Console.println("Couldn't initialize JDA!");
+            Console.println("Couldn't initialize Weabot!");
 
             if(exit) {
                 Main.exit(e.getMessage());
@@ -196,51 +201,14 @@ public class Main
 
             Console.println(e.getMessage());
         }
-
-        Main.jda = jda;
     }
 
     /**
-     * Initializes JDA.
+     * Initializes Weabot.
      */
-    public static void loadJDA()
+    public static void loadWeabot()
     {
-        Main.loadJDA(false);
-    }
-
-    /**
-     * Loads a bot account.
-     *
-     * @return JDA instance.
-     *
-     * @throws Exception If something goes wrong.
-     */
-    private static JDA _loadBotAccount() throws Exception
-    {
-        String token = Main.configuration.getString("bot.token");
-
-        JDABuilder builder = new JDABuilder(AccountType.BOT);
-
-        builder.setToken(token);
-
-        return builder.buildBlocking();
-    }
-
-    /**
-     * Loads an user account.
-     *
-     * @return JDA instance.
-     *
-     * @throws Exception If something goes wrong.
-     */
-    private static JDA _loadUserAccount() throws Exception
-    {
-        String username = Main.configuration.getString("user.name");
-        String password = Main.configuration.getString("user.password");
-
-        JDABuilder builder = new JDABuilder(AccountType.CLIENT);
-
-        throw new Exception("User account login isn't supported yet!");
+        Main.loadWeabot(false);
     }
 
     /**
