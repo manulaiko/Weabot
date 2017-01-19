@@ -37,17 +37,17 @@ public class MessageListener extends ListenerAdapter
 
         String   message = e.getMessage().getContent();
         String[] args    = message.split(" ");
-        String   preffix = Main.configuration.getString("core.preffix");
+        String   prefix  = Main.configuration.getString("core.prefix");
 
-        if(!message.startsWith(preffix)) {
+        if(!message.startsWith(prefix)) {
             return;
         }
 
-        String command = args[0].substring(preffix.length(), (args[0].length() - 1));
+        String command = args[0].substring(prefix.length(), (args[0].length() - 1));
 
         Main.weabot.commands.forEach((i, c) -> {
             if(command == i) {
-                c.execute(args);
+                c.execute(e, args);
             }
         });
     }

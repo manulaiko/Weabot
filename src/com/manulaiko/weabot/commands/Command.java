@@ -18,7 +18,7 @@ public abstract class Command
      */
     public String getFullName()
     {
-        return Main.configuration.getString("core.preffix") + this.getName();
+        return Main.configuration.getString("core.prefix") + this.getName();
     }
 
     /**
@@ -31,6 +31,8 @@ public abstract class Command
         String message = this.getDescription() +"\n" +
                          "Usage: " +
                          "`"+ this.getUsage() +"`";
+
+        channel.sendMessage(message);
     }
 
     /**
