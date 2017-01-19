@@ -80,12 +80,12 @@ public class Database
                 ");"
         );
 
-        // Commands table, contains the commands and the permissions needed to use them
+        // Images table, contains the images used by different commands
         this.update(
-                "CREATE TABLE `commands` (\n" +
-                "    `id`          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-                "    `name`        TEXT NOT NULL,\n" +
-                "    `permissions` TEXT NOT NULL DEFAULT '{}'\n" +
+                "CREATE TABLE `images` (\n" +
+                "    `id`       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "    `link`     TEXT NOT NULL,\n" +
+                "    `category` TEXT NOT NULL DEFAULT ''\n" +
                 ");"
         );
     }
