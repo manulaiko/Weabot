@@ -2,7 +2,8 @@ package com.manulaiko.weabot.launcher;
 
 import java.util.HashMap;
 
-import com.manulaiko.weabot.commands.ICommand;
+import com.manulaiko.weabot.commands.Command;
+import com.manulaiko.weabot.commands.Pet;
 import com.manulaiko.weabot.listerners.MessageListener;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -28,7 +29,7 @@ public class Weabot
      *
      * Commands that the bot can execute.
      */
-    public HashMap<String, ICommand> commands = new HashMap<>();
+    public HashMap<String, Command> commands = new HashMap<>();
 
     /**
      * Constructor.
@@ -118,5 +119,6 @@ public class Weabot
      */
     private void _addCommands()
     {
+        this.commands.put("pet", new Pet());
     }
 }
