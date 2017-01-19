@@ -61,7 +61,7 @@ public class User
     public void save()
     {
         if(this.id == 0) {
-            this.id = Main.database.update(
+            this.id = Main.database.insert(
                     "INSERT INTO `users` (`name`, `discord_id`, `join_date`) VALUES (?, ?, ?)",
                     this.name,
                     this.discordID,
@@ -78,5 +78,21 @@ public class User
                 this.joinDate,
                 this.id
         );
+    }
+
+    /**
+     * Checks that users can pet me.
+     *
+     * @return `true` if users can pet me, `false` if not.
+     */
+    public boolean anyoneCanPetMe()
+    {
+        for(Permission permission : this.permissions) {
+            if(permission.name.equalsIgnoreCase("Anyone can pet me")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
