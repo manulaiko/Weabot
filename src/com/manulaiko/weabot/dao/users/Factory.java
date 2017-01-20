@@ -39,7 +39,8 @@ public class Factory
                     rs.getInt("id"),
                     rs.getString("name"),
                     rs.getString("discord_id"),
-                    rs.getString("join_date")
+                    rs.getString("join_date"),
+                    rs.getInt("rank")
             );
 
             Factory._setPermissions(u);
@@ -66,7 +67,7 @@ public class Factory
     {
         String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
-        User u = new User(0, user.getName(), user.getId(), date);
+        User u = new User(0, user.getName(), user.getId(), date, 0);
 
         u.save();
 

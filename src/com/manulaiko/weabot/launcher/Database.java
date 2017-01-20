@@ -59,7 +59,8 @@ public class Database
                 "CREATE TABLE `users` (\n" +
                 "    `id`         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                 "    `discord_id` TEXT NOT NULL UNIQUE,\n" +
-                "    `join_date`  TEXT NOT NULL\n" +
+                "    `join_date`  TEXT NOT NULL,\n" +
+                "    `rank`       INTEGER NOT NULL DEFAULT '0',\n"+
                 ");"
         );
 
@@ -75,8 +76,10 @@ public class Database
         // Permissions table, contains the different permissions
         this.update(
                 "CREATE TABLE `permissions` (\n" +
-                "    `id`   INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-                "    `name` TEXT NOT NULL\n" +
+                "    `id`          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "    `name`        TEXT NOT NULL,\n" +
+                "    `rank`        INTEGER NOT NULL DEFAULT '0',\n"+
+                "    `description` TEXT NOT NULL DEFAULT 'no description available'\n"+
                 ");"
         );
 
@@ -99,8 +102,8 @@ public class Database
         // Permissions list:
         //  - `Allow Other Users To Command Me`: Allows other users to use commands on other users (e.g. pet another user)
         this.update(
-                "INSERT INTO `permissions` (`id`, `name`) VALUES" +
-                "(1, 'Allow Other Users To Command Me');"
+                "INSERT INTO `permissions` (`id`, `name`, `rank`, `description`) VALUES" +
+                "(1, 'change_rank', 3, 'Allows to change user rank');"
         );
     }
 

@@ -35,6 +35,11 @@ public class User
     public String joinDate;
 
     /**
+     * User rank.
+     */
+    public int rank;
+
+    /**
      * Permissions.
      */
     public List<Permission> permissions;
@@ -46,13 +51,15 @@ public class User
      * @param name      User name.
      * @param discordID User's discord ID.
      * @param joinDate  Join date.
+     * @param rank      User rank.
      */
-    public User(int id, String name, String discordID, String joinDate)
+    public User(int id, String name, String discordID, String joinDate, int rank)
     {
         this.id        = id;
         this.name      = name;
         this.discordID = discordID;
-        this.joinDate   = joinDate;
+        this.joinDate  = joinDate;
+        this.rank      = rank;
     }
 
     /**
@@ -88,7 +95,23 @@ public class User
     public boolean anyoneCanPetMe()
     {
         for(Permission permission : this.permissions) {
-            if(permission.name.equalsIgnoreCase("Anyone can pet me")) {
+            if(permission.name.equalsIgnoreCase("anyone_can_pet_me")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks that I can modify other's configuration.
+     *
+     * @return `true` if I can change other's configuration, `false` if not.
+     */
+    public boolean canChangeOthersConfig()
+    {
+        for(Permission permission : this.permissions) {
+            if(permission.name.equalsIgnoreCase("can_change_others_config")) {
                 return true;
             }
         }

@@ -16,8 +16,35 @@ import com.manulaiko.weabot.launcher.Main;
  */
 public class Factory
 {
+
     /**
-     * Finds an user from its id.
+     * Finds all permissions.
+     *
+     * @return All permissions.
+     */
+    public static List<Permission> all()
+    {
+        List<Permission> permissions = new ArrayList<>();
+
+        ResultSet rs = Main.database.query("SELECT * FROM `users_permissions`");
+
+        try {
+            while(rs.next()) {
+                permissions.add(Factory.find(rs.getInt("permissions_id")));
+            }
+        } catch(Exception e) {
+            Console.println("Couldn't find user's permission!");
+            Console.println(e.getMessage());
+
+            if(Console.debug) {
+                e.printStackTrace();
+            }
+        }
+
+        return permissions;
+    }
+    /**
+     * Finds a permission from its id.
      *
      * @param id Permission ID
      *
@@ -30,14 +57,52 @@ public class Factory
         ResultSet rs = Main.database.query("SELECT * FROM `permissions` WHERE `id`='?'", id);
         try {
             if(!rs.isBeforeFirst()) {
-                Console.println("Permission not found!");
+                Console.println("Permission with id `"+ id +"` not found!");
 
-                return Factory.create(id);
+                return null;
             }
 
             p = new Permission(
                     rs.getInt("id"),
-                    rs.getString("name")
+                    rs.getString("name"),
+                    rs.getInt("rank"),
+                    rs.getString("description")
+            );
+        } catch(Exception e) {
+            Console.println("Couldn't build permission!");
+            Console.println(e.getMessage());
+
+            if(Console.debug) {
+                e.printStackTrace();
+            }
+        }
+
+        return p;
+    }
+    /**
+     * Finds an user from its name.
+     *
+     * @param name Permission name
+     *
+     * @return Permission from database.
+     */
+    public static Permission find(String name)
+    {
+        Permission p = null;
+
+        ResultSet rs = Main.database.query("SELECT * FROM `permissions` WHERE `name`='?'", name);
+        try {
+            if(!rs.isBeforeFirst()) {
+                Console.println("Permission `"+ name +"` not found!");
+
+                return null;
+            }
+
+            p = new Permission(
+                    rs.getInt("id"),
+                    rs.getString("name"),
+                    rs.getInt("rank"),
+                    rs.getString("description")
             );
         } catch(Exception e) {
             Console.println("Couldn't build permission!");
@@ -52,15 +117,17 @@ public class Factory
     }
 
     /**
-     * Creates and returns an permission from its id.
+     * Creates and returns a new permission.
      *
-     * @param id Permission ID.
+     * @param name        Permission name.
+     * @param rank        Permission rank.
+     * @param description Permission description.
      *
-     * @return User from database.
+     * @return Permission from database.
      */
-    public static Permission create(int id)
+    public static Permission create(String name, int rank, String description)
     {
-        Permission p = new Permission(0, "");
+        Permission p = new Permission(0, name, rank, description);
 
         p.save();
 
@@ -94,5 +161,55 @@ public class Factory
         }
 
         return permissions;
+    }
+
+    /**
+     * Finds a permissions from an user.
+     *
+     * @param user       User ID.
+     * @param permission Permission ID.
+     *
+     * @return Permission from user (or null).
+     */
+    public static Permission findByUserID(int user, int permission)
+    {
+        ResultSet rs = Main.database.query("SELECT * FROM `users_permissions` WHERE `users_id`=? AND permissions_id=?", user, permission);
+
+        try {
+            if(rs.isBeforeFirst()) {
+                return Factory.find(permission);
+            }
+        } catch(Exception e) {
+            Console.println("Couldn't find user's permission!");
+            Console.println(e.getMessage());
+
+            if(Console.debug) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Adds a permission to the user.
+     *
+     * @param user       User ID.
+     * @param permission Permission ID.
+     */
+    public static void add(int user, int permission)
+    {
+        Main.database.insert("INSERT INTO `users_permissions` (`users_id`, `permissions_id`) VALUES (?, ?)", user, permission);
+    }
+
+    /**
+     * Removes a permission to the user.
+     *
+     * @param user       User ID.
+     * @param permission Permission ID.
+     */
+    public static void remove(int user, int permission)
+    {
+        Main.database.insert("DELETE FROM `users_permissions` WHERE `users_id`=? AND `permissions_id`=?", user, permission);
     }
 }
