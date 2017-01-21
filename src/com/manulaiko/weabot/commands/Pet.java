@@ -5,7 +5,6 @@ import java.util.List;
 import com.manulaiko.weabot.dao.users.Factory;
 import com.manulaiko.weabot.dao.users.User;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
@@ -53,28 +52,30 @@ public class Pet extends Command
     /**
      * Executes the command.
      *
-     * @param event Event that fired the command.
-     * @param args  Command arguments.
+     * @param e    Event that fired the command.
+     * @param args Command arguments.
      */
     @Override
-    public void execute(Event event, String[] args)
+    public void execute(MessageReceivedEvent e, String[] args)
     {
-        MessageReceivedEvent e = (MessageReceivedEvent)event;
-
-        if(args.length != 2) {
+        if(args.length < 2) {
             super.printUsage(e.getTextChannel());
+
+            return;
         }
 
         List<net.dv8tion.jda.core.entities.User> mentions = e.getMessage().getMentionedUsers();
 
         if(mentions.size() != 1) {
             super.printUsage(e.getTextChannel());
+
+            return;
         }
 
         User user = Factory.find(mentions.get(0));
 
-        if(!user.anyoneCanPetMe()) {
-            e.getTextChannel().sendMessage("You can't pet "+ user.name +"!");
+        if(user.noneCanPetMe()) {
+            e.getTextChannel().sendMessage("You can't pet "+ user.name +"!").queue();
 
             return;
         }
@@ -88,7 +89,7 @@ public class Pet extends Command
         e.getTextChannel().sendMessage(
                 com.manulaiko.weabot.dao.images.Factory.getRandomImage("pet").link +"\n"+
                 user.name +" was petted by "+ e.getAuthor().getName()
-        );
+        ).queue();
     }
 
     /**
@@ -102,6 +103,6 @@ public class Pet extends Command
         channel.sendMessage(
                 com.manulaiko.weabot.dao.images.Factory.getRandomImage("self_pet").link +"\n"+
                 user.name +" was petted by himself"
-        );
+        ).queue();
     }
 }

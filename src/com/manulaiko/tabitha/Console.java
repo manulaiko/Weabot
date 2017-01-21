@@ -78,6 +78,10 @@ public class Console
     {
         String str = "";
         for(Object s : strings) {
+            if(s == null) {
+                continue;
+            }
+
             str += s.toString();
         }
 

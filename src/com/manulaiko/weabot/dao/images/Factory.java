@@ -26,7 +26,7 @@ public class Factory
     {
         Image i = null;
 
-        ResultSet rs = Main.database.query("SELECT * FROM `images` WHERE `id`='?'", id);
+        ResultSet rs = Main.database.query("SELECT * FROM `images` WHERE `id`=?", id);
         try {
             if(!rs.isBeforeFirst()) {
                 Console.println("Image not found!");
@@ -62,7 +62,7 @@ public class Factory
     {
         List<Image> images = new ArrayList<>();
 
-        ResultSet rs = Main.database.query("SELECT * FROM `images` WHERE `category`='?'", category);
+        ResultSet rs = Main.database.query("SELECT * FROM `images` WHERE `category`=?", category);
         try {
             while(rs.next()) {
                 Image i = new Image(

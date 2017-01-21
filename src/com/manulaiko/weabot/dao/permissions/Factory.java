@@ -16,7 +16,6 @@ import com.manulaiko.weabot.launcher.Main;
  */
 public class Factory
 {
-
     /**
      * Finds all permissions.
      *
@@ -54,7 +53,7 @@ public class Factory
     {
         Permission p = null;
 
-        ResultSet rs = Main.database.query("SELECT * FROM `permissions` WHERE `id`='?'", id);
+        ResultSet rs = Main.database.query("SELECT * FROM `permissions` WHERE `id`=?", id);
         try {
             if(!rs.isBeforeFirst()) {
                 Console.println("Permission with id `"+ id +"` not found!");
@@ -90,7 +89,7 @@ public class Factory
     {
         Permission p = null;
 
-        ResultSet rs = Main.database.query("SELECT * FROM `permissions` WHERE `name`='?'", name);
+        ResultSet rs = Main.database.query("SELECT * FROM `permissions` WHERE `name`=?", name);
         try {
             if(!rs.isBeforeFirst()) {
                 Console.println("Permission `"+ name +"` not found!");

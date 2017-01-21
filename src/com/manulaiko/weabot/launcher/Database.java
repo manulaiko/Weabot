@@ -1,9 +1,11 @@
 package com.manulaiko.weabot.launcher;
 
 import java.sql.*;
+import java.util.Properties;
 
 import com.manulaiko.tabitha.Console;
 import com.manulaiko.tabitha.filesystem.File;
+import org.sqlite.JDBC;
 
 /**
  * Database class.
@@ -30,7 +32,7 @@ public class Database
     {
         boolean isNewDatabase = File.exists(path);
 
-        this._connection = DriverManager.getConnection("jdcb:sqlite:"+ path);
+        this._connection = JDBC.createConnection("jdbc:sqlite:"+ path, new Properties());
 
         if(isNewDatabase) {
             this._createDatabase();
@@ -59,8 +61,9 @@ public class Database
                 "CREATE TABLE `users` (\n" +
                 "    `id`         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                 "    `discord_id` TEXT NOT NULL UNIQUE,\n" +
-                "    `join_date`  TEXT NOT NULL,\n" +
-                "    `rank`       INTEGER NOT NULL DEFAULT '0',\n"+
+                "    `name`       TEXT NOT NULL DEFAULT '',\n" +
+                "    `join_date`  TEXT NOT NULL DEFAULT '',\n" +
+                "    `rank`       INTEGER NOT NULL DEFAULT '0'\n"+
                 ");"
         );
 
@@ -228,11 +231,19 @@ public class Database
 
         try {
             Statement stm = this._connection.createStatement();
-            result = stm.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+            stm.executeUpdate(sql);
+
+            ResultSet rs = stm.getGeneratedKeys();
+            if(rs.next()) {
+                result = rs.getInt(1);
+            }
+
             stm.close();
         } catch(Exception e) {
             Console.println("Couldn't execute query `"+ sql +"`");
             Console.println(e.getMessage());
+
+            e.printStackTrace();
 
             if(Console.debug) {
                 e.printStackTrace();
@@ -259,9 +270,9 @@ public class Database
             stmt.executeUpdate();
 
             ResultSet rs = stmt.getGeneratedKeys();
-            rs.next();
-
-            result = rs.getInt(1);
+            if(rs.next()) {
+                result = rs.getInt(1);
+            }
 
             stmt.close();
         } catch(Exception e) {
@@ -309,31 +320,34 @@ public class Database
             }
 
             for(int i = 0; i < args.length; i++) {
-                Object p = args[i];
+                int index = i + 1;
+                Object p  = args[i];
 
                 if(p instanceof Boolean) {
-                    stmt.setBoolean(i, (Boolean)p);
+                    stmt.setBoolean(index, (Boolean)p);
                 } else if(p instanceof Integer) {
-                    stmt.setInt(i, (Integer)p);
+                    stmt.setInt(index, (Integer)p);
                 } else if(p instanceof Double) {
-                    stmt.setDouble(i, (Double)p);
+                    stmt.setDouble(index, (Double)p);
                 } else if(p instanceof Float) {
-                    stmt.setDouble(i, (Float)p);
+                    stmt.setDouble(index, (Float)p);
                 } else if(p instanceof Byte) {
-                    stmt.setByte(i, (Byte)p);
+                    stmt.setByte(index, (Byte)p);
                 } else if(p instanceof Long) {
-                    stmt.setLong(i, (Long)p);
+                    stmt.setLong(index, (Long)p);
                 }  else if(p instanceof Array) {
-                    stmt.setArray(i, (Array)p);
+                    stmt.setArray(index, (Array)p);
                 } else if(p == null) {
-                    stmt.setNull(i, 0);
+                    stmt.setNull(index, 0);
                 } else {
-                    stmt.setString(i, p.toString());
+                    stmt.setString(index, p.toString());
                 }
             }
         } catch(Exception e) {
             Console.println("Couldn't set parameter!");
             Console.println(e.getMessage());
+
+            e.printStackTrace();
         }
 
         return stmt;

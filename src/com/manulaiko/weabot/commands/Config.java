@@ -57,39 +57,38 @@ public class Config extends Command
      * @param args Command arguments.
      */
     @Override
-    public void execute(Event e, String[] args)
+    public void execute(MessageReceivedEvent e, String[] args)
     {
-        MessageReceivedEvent event = (MessageReceivedEvent)e;
         if(args.length <= 1) {
-            super.printUsage(event.getTextChannel());
+            super.printUsage(e.getTextChannel());
 
             return;
         }
 
         if(args[1].equalsIgnoreCase("help")) {
-            this.printHelp(event.getTextChannel());
+            this.printHelp(e.getTextChannel());
 
             return;
         }
 
         String                             key   = args[1];
         String                             value = args[2];
-        net.dv8tion.jda.core.entities.User user  = event.getAuthor();
+        net.dv8tion.jda.core.entities.User user  = e.getAuthor();
 
         if(key.startsWith("@")) {
             if(args.length <= 3) {
-                super.printUsage(event.getTextChannel());
+                super.printUsage(e.getTextChannel());
 
                 return;
             }
 
-            user = event.getMessage().getMentionedUsers().get(0);
+            user = e.getMessage().getMentionedUsers().get(0);
 
             key   = value;
             value = args[3];
         }
 
-        this._handle(event.getTextChannel(), user, key, value);
+        this._handle(e.getTextChannel(), user, e.getAuthor(), key, value);
     }
 
     /**
@@ -108,7 +107,7 @@ public class Config extends Command
 
         message += "```";
 
-        channel.sendMessage(message);
+        channel.sendMessage(message).queue();
     }
 
     /**
@@ -116,15 +115,19 @@ public class Config extends Command
      *
      * @param channel Channel to print the result.
      * @param user    Mentioned user.
+     * @param author  Message author.
      * @param key     Requested configuration.
      * @param value   New value of `key`.
      */
-    private void _handle(TextChannel channel, net.dv8tion.jda.core.entities.User user, String key, String value)
+    private void _handle(TextChannel channel, net.dv8tion.jda.core.entities.User user, net.dv8tion.jda.core.entities.User author, String key, String value)
     {
         User u = Factory.find(user);
 
-        if(!u.canChangeOthersConfig()) {
-            channel.sendMessage("You can't change other's configuration!");
+        if(
+            !author.getId().equalsIgnoreCase(u.discordID) &&
+            !u.canChangeOthersConfig()
+        ) {
+            channel.sendMessage("You can't change other's configuration!").queue();
 
             return;
         }
@@ -138,7 +141,7 @@ public class Config extends Command
         }
 
         if(u.rank < permission.rank) {
-            channel.sendMessage("You don't have enough privileges to change this permission!");
+            channel.sendMessage("You don't have enough privileges to change this permission!").queue();
 
             return;
         }
@@ -147,7 +150,7 @@ public class Config extends Command
             if(!this._asBool(value)) {
                 this._deletePermission(u, permission);
 
-                channel.sendMessage("Permission deleted!");
+                channel.sendMessage("Permission deleted!").queue();
 
                 return;
             }
@@ -158,12 +161,12 @@ public class Config extends Command
         if(this._asBool(value)) {
             this._addPermission(u, permission);
 
-            channel.sendMessage("Permission added!");
+            channel.sendMessage("Permission added!").queue();
 
             return;
         }
 
-        channel.sendMessage("You can't remove a permission you don't have!");
+        channel.sendMessage("You can't remove a permission you don't have!").queue();
     }
 
     /**

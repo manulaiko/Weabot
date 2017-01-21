@@ -92,7 +92,7 @@ public class Main
 
         // 3rd Stage: Initialize command prompt
         Main.commandPrompt = new CommandPrompt();
-        Main.commandPrompt.start();
+        //Main.commandPrompt.start();
     }
 
     /**
@@ -142,7 +142,7 @@ public class Main
      */
     public static void loadDatabase(boolean exit)
     {
-        Console.println("Stage 2: Loading the SQLite Database");
+        Console.println("Stage 2: Loading the SQLite Database...");
         try {
             Main.database = new Database(Main.databaseLocation);
         } catch (Exception e) {
@@ -171,6 +171,7 @@ public class Main
      */
     public static void loadWeabot(boolean exit)
     {
+        Console.println("Stage 3: Loading Weabot...");
         String accountType = Main.configuration.getString("core.account_type");
 
         try {

@@ -24,7 +24,7 @@ public class MessageListener extends ListenerAdapter
     @Override
     public void onMessageReceived(MessageReceivedEvent e)
     {
-        if(Main.configuration.getBoolean("messages.print")) {
+        if(Main.configuration.getBoolean("core.print_messages")) {
             String message = this.formatMessage(
                     e.getMessage().getContent(),
                     e.getAuthor().getName(),
@@ -43,10 +43,10 @@ public class MessageListener extends ListenerAdapter
             return;
         }
 
-        String command = args[0].substring(prefix.length(), (args[0].length() - 1));
+        String command = args[0].substring(prefix.length(), args[0].length());
 
         Main.weabot.commands.forEach((i, c) -> {
-            if(command == i) {
+            if(command.equalsIgnoreCase(i)) {
                 c.execute(e, args);
             }
         });

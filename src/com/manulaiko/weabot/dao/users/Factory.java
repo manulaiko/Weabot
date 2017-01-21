@@ -27,7 +27,7 @@ public class Factory
     {
         User u = null;
 
-        ResultSet rs = Main.database.query("SELECT * FROM `users` WHERE `discord_id`='?'", user.getId());
+        ResultSet rs = Main.database.query("SELECT * FROM `users` WHERE `discord_id`=?", user.getId());
         try {
             if(!rs.isBeforeFirst()) {
                 Console.println("User not found!");

@@ -2,7 +2,7 @@ package com.manulaiko.weabot.commands;
 
 import com.manulaiko.weabot.launcher.Main;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.Event;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
  * Command interface.
@@ -32,7 +32,7 @@ public abstract class Command
                          "Usage: " +
                          "`"+ this.getUsage() +"`";
 
-        channel.sendMessage(message);
+        channel.sendMessage(message).queue();
     }
 
     /**
@@ -62,5 +62,5 @@ public abstract class Command
      * @param e    Event that fired the command.
      * @param args Command arguments.
      */
-    public abstract void execute(Event e, String[] args);
+    public abstract void execute(MessageReceivedEvent e, String[] args);
 }

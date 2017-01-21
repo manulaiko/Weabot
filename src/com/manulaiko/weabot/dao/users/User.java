@@ -1,7 +1,9 @@
 package com.manulaiko.weabot.dao.users;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.manulaiko.tabitha.Console;
 import com.manulaiko.weabot.dao.permissions.Permission;
 import com.manulaiko.weabot.launcher.Main;
 
@@ -42,7 +44,7 @@ public class User
     /**
      * Permissions.
      */
-    public List<Permission> permissions;
+    public List<Permission> permissions = new ArrayList<>();
 
     /**
      * Constructor.
@@ -75,6 +77,9 @@ public class User
                     this.joinDate
             );
 
+            Console.println("User created!");
+            Console.println("Name: "+ this.name +", ID: "+ this.id);
+
             return;
         }
 
@@ -90,12 +95,12 @@ public class User
     /**
      * Checks that users can pet me.
      *
-     * @return `true` if users can pet me, `false` if not.
+     * @return `true` if no users can pet me, `false` if not.
      */
-    public boolean anyoneCanPetMe()
+    public boolean noneCanPetMe()
     {
         for(Permission permission : this.permissions) {
-            if(permission.name.equalsIgnoreCase("anyone_can_pet_me")) {
+            if(permission.name.equalsIgnoreCase("none_can_pet_me")) {
                 return true;
             }
         }

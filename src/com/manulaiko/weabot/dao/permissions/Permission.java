@@ -52,10 +52,11 @@ public class Permission
     public void save()
     {
         if(this.id == 0) {
-            this.id = Main.database.update(
+            this.id = Main.database.insert(
                     "INSERT INTO `permissions` (`name`, `rank`, `description`) VALUES (?, ?, ?)",
                     this.name,
-                    this.rank
+                    this.rank,
+                    this.description
             );
 
             return;
