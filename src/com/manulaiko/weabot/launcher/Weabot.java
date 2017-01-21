@@ -2,6 +2,7 @@ package com.manulaiko.weabot.launcher;
 
 import java.util.HashMap;
 
+import com.manulaiko.weabot.commands.Add;
 import com.manulaiko.weabot.commands.Command;
 import com.manulaiko.weabot.commands.Config;
 import com.manulaiko.weabot.commands.Pet;
@@ -120,9 +121,10 @@ public class Weabot
      */
     private void _addCommands()
     {
-        Command[] commands = new Command[]{
+        Command[] commands = new Command[] {
             new Pet(),
-            new Config()
+            new Config(),
+            new Add()
         };
 
         for(Command c : commands) {
