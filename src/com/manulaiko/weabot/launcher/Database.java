@@ -30,11 +30,11 @@ public class Database
      */
     public Database(String path) throws Exception
     {
-        boolean isNewDatabase = File.exists(path);
+        boolean dbExists = File.exists(path);
 
         this._connection = JDBC.createConnection("jdbc:sqlite:"+ path, new Properties());
 
-        if(isNewDatabase) {
+        if(!dbExists) {
             this._createDatabase();
         }
     }
