@@ -73,7 +73,7 @@ public class Add extends Command
 
         User author = com.manulaiko.weabot.dao.users.Factory.find(e.getAuthor());
         if(author.rank < 2) {
-            e.getTextChannel().sendMessage("You can't use this command!");
+            e.getTextChannel().sendMessage("You can't use this command!").queue();
 
             return;
         }
