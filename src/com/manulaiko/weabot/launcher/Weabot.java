@@ -6,6 +6,7 @@ import com.manulaiko.weabot.commands.Add;
 import com.manulaiko.weabot.commands.Command;
 import com.manulaiko.weabot.commands.Config;
 import com.manulaiko.weabot.commands.Pet;
+import com.manulaiko.weabot.listerners.ImageScrapper;
 import com.manulaiko.weabot.listerners.MessageListener;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -108,7 +109,8 @@ public class Weabot
     private void _addListeners()
     {
         ListenerAdapter[] listeners = new ListenerAdapter[]{
-                new MessageListener()
+                new MessageListener(),
+                new ImageScrapper()
         };
 
         for(ListenerAdapter l : listeners) {
