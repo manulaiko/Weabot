@@ -89,10 +89,19 @@ public class Database
         // Images table, contains the images used by different commands
         this.update(
                 "CREATE TABLE `images` (\n" +
-                "    `id`       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-                "    `link`     TEXT NOT NULL,\n" +
-                "    `category` TEXT NOT NULL DEFAULT ''\n" +
-                ");"
+                        "    `id`       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                        "    `link`     TEXT NOT NULL,\n" +
+                        "    `category` TEXT NOT NULL DEFAULT ''\n" +
+                        ");"
+        );
+
+        // Scrappers table, contains the image scrappers
+        this.update(
+                "CREATE TABLE `scrappers` (\n" +
+                        "    `id`         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                        "    `channel_id` TEXT NOT NULL,\n" +
+                        "    `path`       TEXT NOT NULL DEFAULT ''\n" +
+                        ");"
         );
     }
 
