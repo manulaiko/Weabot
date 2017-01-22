@@ -75,7 +75,10 @@ public class Pet extends Command
         User user = Factory.find(mentions.get(0));
 
         if(user.noneCanPetMe()) {
-            e.getTextChannel().sendMessage("You can't pet "+ user.name +"!").queue();
+            e.getTextChannel().sendMessage(
+                    com.manulaiko.weabot.dao.images.Factory.getRandomImage("pet_rejected").link +"\n"+
+                    "One does not simply pet "+ user.name +"!"
+            ).queue();
 
             return;
         }
