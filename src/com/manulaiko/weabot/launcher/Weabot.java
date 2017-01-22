@@ -124,7 +124,8 @@ public class Weabot
             new Pet(),
             new Grope(),
             new Config(),
-            new Add()
+            new Add(),
+            new Help()
         };
 
         for(Command c : commands) {
