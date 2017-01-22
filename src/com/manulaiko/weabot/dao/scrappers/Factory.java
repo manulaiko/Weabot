@@ -107,7 +107,7 @@ public class Factory
      *
      * @return Created scrapper.
      */
-    public Scrapper create(TextChannel channel, String path)
+    public static Scrapper create(TextChannel channel, String path)
     {
         Scrapper s = new Scrapper(0, channel.getId(), path);
 

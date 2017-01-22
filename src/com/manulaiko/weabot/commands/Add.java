@@ -1,5 +1,6 @@
 package com.manulaiko.weabot.commands;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Map;
 import com.manulaiko.weabot.dao.images.Image;
 import com.manulaiko.weabot.dao.permissions.Factory;
 import com.manulaiko.weabot.dao.permissions.Permission;
+import com.manulaiko.weabot.dao.scrappers.Scrapper;
 import com.manulaiko.weabot.dao.users.User;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -230,6 +232,129 @@ public class Add extends Command
                         "image [link] [category]\n" +
                         "```\n" +
                         "Neither `link` nor `category` can't contain whitespaces!";
+
+                channel.sendMessage(message).queue();
+            }
+        });
+        commands.put("scrapper", new Option() {
+            /**
+             * Returns option description.
+             *
+             * @return Option description.
+             */
+            @Override
+            public String getDescription()
+            {
+                return "Adds a new image scrapper to the database.";
+            }
+
+            /**
+             * Handles the option.
+             *
+             * @param args    Option arguments.
+             * @param channel Channel
+             */
+            @Override
+            public void handle(String[] args, TextChannel channel)
+            {
+                if(args.length < 3) {
+                    this.printUsage(channel);
+
+                    return;
+                }
+
+                TextChannel c = null;
+                String      p = args[2];
+
+                if(args.length == 3) {
+                    c = channel;
+                } else if(args.length == 4) {
+                    List<TextChannel> channels = channel.getGuild().getTextChannels();
+
+                    for(TextChannel tc : channels) {
+                        if(tc.getName().equals(args[3])) {
+                            c = tc;
+
+                            break;
+                        }
+                    }
+                }
+
+                if(c == null) {
+                    this.printUsage(channel);
+
+                    return;
+                }
+
+                File f = new File(p);
+                if(f.exists() && f.isFile()) {
+                    channel.sendMessage("Path already exists and is a file!").queue();
+
+                    return;
+                }
+
+                if(!f.mkdirs()) {
+                    channel.sendMessage("Couldn't make directories!").queue();
+
+                    return;
+                }
+
+                p = this.getPath(f.getAbsolutePath());
+
+                Scrapper scrapper = com.manulaiko.weabot.dao.scrappers.Factory.create(c, p);
+
+                if(scrapper.id == 0) {
+                    channel.sendMessage("Couldn't create image scrapper!").queue();
+
+                    return;
+                }
+
+                channel.sendMessage(
+                        "Image scrapper created with ID "+ scrapper.id +"!\n" +
+                        "From now over all images posted in channel with ID `"+ scrapper.channelID +"` " +
+                        "will be saved on `"+ scrapper.path +"`!"
+                ).queue();
+            }
+
+            /**
+             * Returns prepared path.
+             *
+             * @param path Base path.
+             *
+             * @return Prepared `path`.
+             */
+            public String getPath(String path)
+            {
+                String separator = "/";
+
+                if(System.getProperty("os.name").contains("Windows")) {
+                    separator = "\\";
+
+                    // Well, I won't think too much with this because I don't use
+                    // winshit so I don't give a fuck if they're escaped correctly.
+                    // If you have problems with paths while scrapping images, fix this.
+                    path = path.replace("\\", "\\\\");
+                }
+
+                if(!path.endsWith(separator)) {
+                    path += separator;
+                }
+
+                return path;
+            }
+
+            /**
+             * Prints option usage.
+             *
+             * @param channel Channel to send the message.
+             */
+            public void printUsage(TextChannel channel)
+            {
+                String message = "Options:\n" +
+                        "```\n" +
+                        "scrapper [path] ([channel])\n" +
+                        "```\n" +
+                        "`path` can't contain whitespaces!";
 
                 channel.sendMessage(message).queue();
             }

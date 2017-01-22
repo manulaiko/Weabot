@@ -70,7 +70,7 @@ public class ImageScrapper extends ListenerAdapter
                 f = new File(s.path + System.currentTimeMillis() +"-"+ attachment.getFileName());
             }
 
-            if(!f.mkdirs()) {
+            if(!f.getParentFile().mkdirs()) {
                 Console.println("Couldn't make directories for "+ s.path +"!");
 
                 return;
