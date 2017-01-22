@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.apache.http.HttpHost;
 
 /**
  * Weabot class.
@@ -70,6 +71,18 @@ public class Weabot
         JDABuilder builder = new JDABuilder(AccountType.BOT);
 
         builder.setToken(token);
+
+        if(Main.configuration.getBoolean("proxy.enabled")) {
+            builder.setProxy(
+                    new HttpHost(
+                        Main.configuration.getString("proxy.host"),
+                        Main.configuration.getInt("proxy.port")
+                    )
+            );
+
+            System.setProperty("http.proxyHost", Main.configuration.getString("proxy.host"));
+            System.setProperty("http.proxyPort", Main.configuration.getString("proxy.port"));
+        }
 
         return builder.buildBlocking();
     }
