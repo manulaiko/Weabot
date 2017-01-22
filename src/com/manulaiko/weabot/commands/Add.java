@@ -8,6 +8,7 @@ import java.util.Map;
 import com.manulaiko.weabot.dao.images.Image;
 import com.manulaiko.weabot.dao.permissions.Factory;
 import com.manulaiko.weabot.dao.permissions.Permission;
+import com.manulaiko.weabot.dao.users.User;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -68,6 +69,13 @@ public class Add extends Command
             return;
         }
 
+        User author = com.manulaiko.weabot.dao.users.Factory.find(e.getAuthor());
+        if(author.rank < 2) {
+            e.getTextChannel().sendMessage("You can't use this command!");
+
+            return;
+        }
+
         HashMap<String, Option> commands = this.getOptions();
 
         if(!commands.containsKey(args[1])) {
@@ -115,9 +123,19 @@ public class Add extends Command
                     return;
                 }
 
-                String name = args[2];
-                int    rank = Integer.parseInt(args[3]);
-                String desc = "";
+                String name;
+                String desc;
+                int    rank;
+
+                try {
+                    name = args[2];
+                    rank = Integer.parseInt(args[3]);
+                    desc = "";
+                } catch(Exception e) {
+                    this.printUsage(channel);
+
+                    return;
+                }
 
                 for(int i = 4; i < args.length; i++) {
                     if(!desc.isEmpty()) {
