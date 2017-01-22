@@ -2,10 +2,7 @@ package com.manulaiko.weabot.launcher;
 
 import java.util.HashMap;
 
-import com.manulaiko.weabot.commands.Add;
-import com.manulaiko.weabot.commands.Command;
-import com.manulaiko.weabot.commands.Config;
-import com.manulaiko.weabot.commands.Pet;
+import com.manulaiko.weabot.commands.*;
 import com.manulaiko.weabot.listerners.ImageScrapper;
 import com.manulaiko.weabot.listerners.MessageListener;
 import net.dv8tion.jda.core.AccountType;
@@ -125,6 +122,7 @@ public class Weabot
     {
         Command[] commands = new Command[] {
             new Pet(),
+            new Grope(),
             new Config(),
             new Add()
         };

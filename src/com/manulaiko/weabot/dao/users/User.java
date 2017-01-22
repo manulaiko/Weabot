@@ -109,6 +109,22 @@ public class User
     }
 
     /**
+     * Checks that users can grope me.
+     *
+     * @return `true` if no users can grope me, `false` if not.
+     */
+    public boolean noneCanGropeMe()
+    {
+        for(Permission permission : this.permissions) {
+            if(permission.name.equalsIgnoreCase("none_can_grope_me")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Checks that I can modify other's configuration.
      *
      * @return `true` if I can change other's configuration, `false` if not.
