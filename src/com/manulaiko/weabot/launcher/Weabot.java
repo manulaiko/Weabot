@@ -70,19 +70,19 @@ public class Weabot
     {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
 
-        builder.setToken(token);
-
         if(Main.configuration.getBoolean("proxy.enabled")) {
             builder.setProxy(
                     new HttpHost(
-                        Main.configuration.getString("proxy.host"),
-                        Main.configuration.getInt("proxy.port")
+                            Main.configuration.getString("proxy.host"),
+                            Main.configuration.getInt("proxy.port")
                     )
             );
 
             System.setProperty("http.proxyHost", Main.configuration.getString("proxy.host"));
             System.setProperty("http.proxyPort", Main.configuration.getString("proxy.port"));
         }
+
+        builder.setToken(token);
 
         return builder.buildBlocking();
     }
@@ -134,6 +134,7 @@ public class Weabot
     private void _addCommands()
     {
         Command[] commands = new Command[] {
+            new Animu(),
             new Pet(),
             new Grope(),
             new Config(),
