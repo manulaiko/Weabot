@@ -19,7 +19,7 @@ public class Main
     /**
      * Application version.
      */
-    public static final String version = "1.2.1";
+    public static final String version = "2.0.0";
 
     /**
      * Configuration object.
