@@ -33,14 +33,18 @@ public class Stats extends Command
         EmbedBuilder builder = new EmbedBuilder();
 
         builder.addField("Runtime", this.runtime(), true);
-        builder.addField("Version", Main.version, false);
+        builder.addField("Version", Main.version, true);
+
+        builder.addBlankField(false);
 
         builder.addField("Received messages", this.receivedMessages(), true);
         builder.addField("Executed commands", this.executedCommands(), true);
 
-        builder.addField("Scrappers", this.scrappers(), false);
-        builder.addField("Scrapped images", this.scrappedImages(), true);
+        builder.addBlankField(false);
 
+        builder.addField("Scrappers", this.scrappers(), false);
+
+        builder.addField("Scrapped images", this.scrappedImages(), true);
         builder.addField("Users", this.users(event.getGuild()), true);
 
         event.getTextChannel().sendMessage(builder.build()).queue();
