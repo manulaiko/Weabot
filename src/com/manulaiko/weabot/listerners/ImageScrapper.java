@@ -61,7 +61,7 @@ public class ImageScrapper extends ListenerAdapter
             return;
         }
 
-        List<Scrapper> scrappers = Factory.find(channel);
+        List<Scrapper> scrappers = Factory.byChannel(channel);
 
         scrappers.forEach((s)->{
             File f = new File(s.path + attachment.getFileName());

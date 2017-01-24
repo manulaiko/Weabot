@@ -139,6 +139,7 @@ public class Weabot
             new Grope(),
             new Config(),
             new Add(),
+            new Delete(),
             new Help()
         };
 

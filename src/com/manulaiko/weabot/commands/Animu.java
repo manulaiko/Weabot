@@ -124,6 +124,8 @@ public class Animu extends Command
 
             e.getTextChannel().sendMessage(b.build()).queue();
 
+            i++;
+
             if(
                 !all &&
                 i < animes.size()
@@ -132,8 +134,6 @@ public class Animu extends Command
 
                 break;
             }
-
-            i++;
         }
     }
 

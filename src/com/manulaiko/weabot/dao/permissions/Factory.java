@@ -78,6 +78,7 @@ public class Factory
 
         return p;
     }
+
     /**
      * Finds an user from its name.
      *
@@ -113,6 +114,20 @@ public class Factory
         }
 
         return p;
+    }
+
+    /**
+     * Deletes a permission from the database.
+     *
+     * @param permission Permission to delete.
+     *
+     * @return `true` if the permission was deleted successfully, `false` if not.
+     */
+    public static boolean delete(Permission permission)
+    {
+        int rows = Main.database.update("DELETE * FROM `permissions` WHERE `id`=?", permission.id);
+
+        return (rows > 0);
     }
 
     /**

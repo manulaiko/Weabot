@@ -1,5 +1,6 @@
 package com.manulaiko.weabot.dao.scrappers;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,26 +54,25 @@ public class Factory
     }
 
     /**
-     * Finds and returns an scrapper from its channel.
+     * Finds and returns all scrappers from its channel.
      *
      * @param channel Scrapper channel.
      *
      * @return Scrappers from database.
      */
-    public static List<Scrapper> find(TextChannel channel)
+    public static List<Scrapper> byChannel(TextChannel channel)
     {
-        return Factory.find(channel.getId());
+        return Factory.byChannel(channel.getId());
     }
 
-
     /**
-     * Finds and returns an scrapper from its channel ID.
+     * Finds and returns all scrappers from its channel ID.
      *
      * @param channelID Scrapper channel ID.
      *
      * @return Scrappers from database.
      */
-    public static List<Scrapper> find(String channelID)
+    public static List<Scrapper> byChannel(String channelID)
     {
         List<Scrapper> scrappers = new ArrayList<>();
 
@@ -97,6 +97,66 @@ public class Factory
         }
 
         return scrappers;
+    }
+
+    /**
+     * Finds and returns all scrappers from its path.
+     *
+     * @param path Scrapper path.
+     *
+     * @return Scrappers from database.
+     */
+    public static List<Scrapper> byPath(File path)
+    {
+        return Factory.byChannel(path.getAbsolutePath());
+    }
+
+    /**
+     * Finds and returns all scrappers from its path.
+     *
+     * @param path Scrapper path.
+     *
+     * @return Scrappers from database.
+     */
+    public static List<Scrapper> byPath(String path)
+    {
+        List<Scrapper> scrappers = new ArrayList<>();
+
+        ResultSet rs = Main.database.query("SELECT * FROM `scrappers` WHERE `path`=?", path);
+        try {
+            while(rs.next()) {
+                Scrapper s = new Scrapper(
+                        rs.getInt("id"),
+                        rs.getString("channel_id"),
+                        rs.getString("path")
+                );
+
+                scrappers.add(s);
+            }
+        } catch(Exception e) {
+            Console.println("Couldn't build scrapper!");
+            Console.println(e.getMessage());
+
+            if(Console.debug) {
+                e.printStackTrace();
+            }
+        }
+
+        return scrappers;
+    }
+
+    /**
+     * Deletes a scrapper from the database.
+     *
+     * @param scrapper Scrapper to delete.
+     *
+     * @return `true` if the scrapper was deleted successfully, `false` if not.
+     */
+    public static boolean delete(Scrapper scrapper)
+    {
+        int rows = Main.database.update("DELETE * FROM `scrappers` WHERE `id`=?", scrapper.id);
+
+        return (rows > 0);
     }
 
     /**

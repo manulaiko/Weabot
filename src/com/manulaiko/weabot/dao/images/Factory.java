@@ -86,6 +86,20 @@ public class Factory
     }
 
     /**
+     * Deletes an image from the database.
+     *
+     * @param image Image to delete.
+     *
+     * @return `true` if the image was deleted successfully, `false` if not.
+     */
+    public static boolean delete(Image image)
+    {
+        int rows = Main.database.update("DELETE * FROM `images` WHERE `id`=?", image.id);
+
+        return (rows > 0);
+    }
+
+    /**
      * Builds and returns a random image.
      *
      * @param category Image category.
