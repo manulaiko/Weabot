@@ -1,46 +1,38 @@
 package com.manulaiko.weabot.commands;
 
 import com.manulaiko.weabot.launcher.Main;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 /**
- * Base class for all commands.
+ * Command interface.
  *
  * @author Manulaiko <manulaiko@gmail.com>
  */
 public abstract class Command
 {
     /**
-     * Checks whether this command can execute `name` command.
+     * Returns full command name.
      *
-     * @param name Command name to check.
-     *
-     * @return Whether this command can execute `name`.
+     * @return Full command name.
      */
-    public boolean canExecute(String name)
+    public String getFullName()
     {
-        String cName = this.getFullName();
-
-        if(Main.configuration.getBoolean("bot.ignoreCase")) {
-            return cName.equalsIgnoreCase(name);
-        }
-
-        return cName.equals(name);
+        return Main.configuration.getString("core.prefix") + this.getName();
     }
 
     /**
-     * Returns the message for the `help` command.
+     * Prints command usage.
      *
-     * @return `help` command message.
+     * @param channel Channel to send the message.
      */
-    public String getHelp()
+    public void printUsage(TextChannel channel)
     {
-        String help = this.getFullName() +":\n"+
-                      "```\n"+
-                      this.getDescription() +"\n"+
-                      "```";
+        String message = this.getDescription() +"\n" +
+                         "Usage: " +
+                         "`"+ this.getUsage() +"`";
 
-        return help;
+        channel.sendMessage(message).queue();
     }
 
     /**
@@ -51,16 +43,6 @@ public abstract class Command
     public abstract String getName();
 
     /**
-     * Returns full name (prefix + command name).
-     *
-     * @return Full command name.
-     */
-    public String getFullName()
-    {
-        return Main.configuration.getString("bot.prefix") + this.getName();
-    }
-
-    /**
      * Returns command description.
      *
      * @return Command description.
@@ -68,10 +50,17 @@ public abstract class Command
     public abstract String getDescription();
 
     /**
+     * Returns command usage.
+     *
+     * @return Command usage.
+     */
+    public abstract String getUsage();
+
+    /**
      * Executes the command.
      *
-     * @param event Event that fired the command.
-     * @param args  Command arguments.
+     * @param e    Event that fired the command.
+     * @param args Command arguments.
      */
-    public abstract void execute(MessageReceivedEvent event, String[] args);
+    public abstract void execute(MessageReceivedEvent e, String[] args);
 }

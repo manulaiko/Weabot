@@ -1,16 +1,11 @@
 package com.manulaiko.weabot.launcher;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
 import com.manulaiko.tabitha.Configuration;
 import com.manulaiko.tabitha.Console;
 import com.manulaiko.tabitha.configuration.IConfiguration;
 import com.manulaiko.tabitha.utils.CommandPrompt;
-import com.manulaiko.weabot.launcher.commands.*;
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.JDABuilder;
 
 /**
  * Weabot main class
@@ -23,20 +18,33 @@ public class Main
 {
     /**
      * Application version.
-     *
-     * @var Version.
      */
-    private static final String version = "1.2.1";
+    public static final String version = "2.0.0";
 
     /**
      * Configuration object.
      *
      * Instance of `com.manulaiko.tabitha.configuration.IConfiguration` with the
      * configuration file.
-     *
-     * @var Configuration object.
      */
     public static IConfiguration configuration;
+
+    /**
+     * Command prompt.
+     */
+    public static CommandPrompt commandPrompt;
+
+    /**
+     * Database object.
+     *
+     * Used to interact with the SQLite database.
+     */
+    public static Database database;
+
+    /**
+     * Weabot object.
+     */
+    public static Weabot weabot;
 
     /**
      * Configuration file location.
@@ -45,33 +53,18 @@ public class Main
      * where the application was launched being the starting point.
      *
      * By default it's `config.ini`.
-     *
-     * @var Configuration file location.
      */
     public static final String configurationFileLocation = "config.ini";
 
     /**
-     * JDA instance.
+     * Database file location.
      *
-     * The instance of the JDA library used for interacting with Discord API.
+     * The relative path of the database file being the location
+     * where the application was launched being the starting point.
      *
-     * @var JDA Instance.
+     * By default it's `weabot.db`.
      */
-    public static JDA jda;
-
-    /**
-     * Message listener instance.
-     *
-     * Contains available commands and processes received messages.
-     *
-     * @var MessageListener Instance.
-     */
-    public static MessageListener messageListener;
-
-    /**
-     * Command prompt.
-     */
-    public static CommandPrompt commandPrompt;
+    public static final String databaseLocation = "weabot.db";
 
     /**
      * Start time.
@@ -89,20 +82,47 @@ public class Main
         Console.println(Console.LINE_EQ);
 
         // 1st Stage: Load configuration file.
-        Main.loadConfiguration();
-        Console.debug = Main.configuration.getBoolean("core.debug");
+        Main.loadConfiguration(true);
 
-        // 2nd Stage: Initialize JDA
-        Main.initializeJDA();
+        // 2nd Stage: Load the SQLite Database.
+        Main.loadDatabase(true);
+
+        // 3rd Stage: Initialize Weabot.
+        Main.loadWeabot(true);
 
         // 3rd Stage: Initialize command prompt
         Main.commandPrompt = new CommandPrompt();
-        Main.commandPrompt.addCommand(new AddModCommand());
-        Main.commandPrompt.addCommand(new RemoveModCommand());
-        Main.commandPrompt.addCommand(new AddAdminCommand());
-        Main.commandPrompt.addCommand(new RemoveAdminCommand());
-        Main.commandPrompt.addCommand(new ReloadConfiguration());
-        Main.commandPrompt.start();
+        //Main.commandPrompt.start();
+    }
+
+    /**
+     * Reads the configuration file and sets the
+     * `Main.configuration` object.
+     *
+     * @param exit Whether to exit or not in a failed attempt to read the file
+     */
+    public static void loadConfiguration(boolean exit)
+    {
+        try {
+            Console.println("Stage 1: Reading configuration file...");
+
+            Main.configuration = Configuration.load(Main.configurationFileLocation);
+
+            Console.debug = Main.configuration.getBoolean("core.debug");
+        } catch(FileNotFoundException e) {
+            Console.println("Be sure that the configuration file is located in `" + Main.configurationFileLocation + "`");
+
+            if(exit) {
+                Main.exit("");
+            }
+        } catch(Exception e) {
+            Console.println("There was a problem reading configuration file.");
+            Console.println(e.getMessage());
+
+            if(exit) {
+                Main.exit("");
+            }
+        }
     }
 
     /**
@@ -111,96 +131,77 @@ public class Main
      */
     public static void loadConfiguration()
     {
-        try {
-            Console.println("Stage 1: Reading configuration file...");
-
-            Main.configuration = Configuration.load(Main.configurationFileLocation);
-
-            String saveImages = Main.configuration.getString("core.saveImages");
-            for(String s : saveImages.split("\\|")) {
-                if(s.isEmpty()) {
-                    continue;
-                }
-
-                String i[] = s.split(";");
-                String channels[] = i[0].split(",");
-                String paths[]    = i[1].split(",");
-
-                Main._addSaveImageFromChannels(channels, paths);
-            }
-        } catch(FileNotFoundException e) {
-            Main.exit("Be sure that the configuration file is located in `"+ Main.configurationFileLocation +"`");
-        } catch(Exception e) {
-            Console.println("There was a problem reading configuration file.");
-            Main.exit(e.getMessage());
-        }
+        Main.loadConfiguration(false);
     }
 
     /**
-     * Adds various channels to the save image list.
+     * Loads the SQLite database and sets the
+     * `Main.database` object.
      *
-     * @param channels Channels to add.
-     * @param paths    Paths where the images will be saved.
+     * @param exit Whether to exit or not in a failed attempt to load the database
      */
-    private static void _addSaveImageFromChannels(String[] channels, String[] paths)
+    public static void loadDatabase(boolean exit)
     {
-        for(String channel : channels) {
-            for(String path : paths) {
-                File f = new File(path);
-                if(!f.exists()) {
-                    Console.debug("Directories for `"+ f.getAbsolutePath() +"` created!");
+        Console.println("Stage 2: Loading the SQLite Database...");
+        try {
+            Main.database = new Database(Main.databaseLocation);
+        } catch (Exception e) {
+            Console.println("Couldn't connect to the database!");
+            Console.println(e.getMessage());
 
-                    f.mkdirs();
-                }
-                if(f.isFile()) {
-                    Console.println(path +" is a file!");
-
-                    continue;
-                }
-
-                if(!Settings.saveImagesChannels.containsKey(channel)) {
-                    Settings.saveImagesChannels.put(channel, new ArrayList<>());
-                }
-
-                Settings.saveImagesChannels.get(channel).add(f);
-
-                Console.debug("Images from `"+ channel +"` will be saved on `"+ f.getAbsolutePath() +"`");
+            if(exit) {
+                Main.exit("");
             }
         }
     }
 
     /**
-     * Initializes the JDA library.
+     * Loads the SQLite database and sets the
+     * `Main.database` object.
      */
-    public static void initializeJDA()
+    public static void loadDatabase()
     {
+        Main.loadDatabase(false);
+    }
+
+    /**
+     * Initializes Weabot.
+     *
+     * @param exit Whether to exit or not in a failed attempt to initialize JDA
+     */
+    public static void loadWeabot(boolean exit)
+    {
+        Console.println("Stage 3: Loading Weabot...");
+        String accountType = Main.configuration.getString("core.account_type");
+
         try {
-            Console.println("Initializing Weabot...");
+            if(accountType.equalsIgnoreCase("bot")) {
+                Main.weabot = new Weabot(Main.configuration.getString("bot.token"));
+            }
 
-            Main.messageListener = new MessageListener();
-            JDABuilder builder   = new JDABuilder();
-
-            if(Main.configuration.getBoolean("proxy.enabled")) {
-                builder.setProxy(
-                        Main.configuration.getString("proxy.host"),
-                        Main.configuration.getInt("proxy.port")
+            if(accountType.equalsIgnoreCase("user")) {
+                Main.weabot = new Weabot(
+                        Main.configuration.getString("user.name"),
+                        Main.configuration.getString("user.password")
                 );
             }
-
-            String token = Main.configuration.getString("core.token");
-            if(token.isEmpty()) {
-                Console.println("Bot token wasn't set!");
-                Console.print("Enter bot token: ");
-                token = Console.readLine();
-            }
-            builder.setBotToken(token);
-
-            Main.jda = builder.buildBlocking();
-            Main.jda.addEventListener(Main.messageListener);
         } catch(Exception e) {
             Console.println("Couldn't initialize Weabot!");
-            Main.exit(e.getMessage());
+
+            if(exit) {
+                Main.exit(e.getMessage());
+            }
+
+            Console.println(e.getMessage());
         }
+    }
+
+    /**
+     * Initializes Weabot.
+     */
+    public static void loadWeabot()
+    {
+        Main.loadWeabot(false);
     }
 
     /**
@@ -224,41 +225,5 @@ public class Main
     public static void exit(String message)
     {
         Main.exit(message, 0);
-    }
-
-    /**
-     * Winshit's path parser.
-     *
-     * @return Path separator.
-     */
-    public static String separator()
-    {
-        String separator = "/";
-        if(System.getProperty("os.name").contains("Windows")) {
-            separator = "\\";
-        }
-
-        return separator;
-    }
-
-    /**
-     * Returns run time.
-     *
-     * @return Run time.
-     */
-    public static String getRuntime()
-    {
-        long millis = System.currentTimeMillis() - Main.start;
-
-        long second = (millis / 1000) % 60;
-        long minute = (millis / (1000 * 60)) % 60;
-        long hour   = (millis / (1000 * 60 * 60)) % 24;
-
-        String runtime = String.format("%02d minutes and %02d seconds", minute, second);
-        if(hour > 0) {
-            runtime = String.format("%02d hours %02d minutes and %02d seconds", hour, minute, second);
-        }
-
-        return runtime;
     }
 }
