@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.manulaiko.weabot.dao.images.Image;
+import com.manulaiko.weabot.dao.messages.Message;
 import com.manulaiko.weabot.dao.permissions.Factory;
 import com.manulaiko.weabot.dao.permissions.Permission;
 import com.manulaiko.weabot.dao.scrappers.Scrapper;
@@ -72,7 +73,7 @@ public class Add extends Command
         }
 
         User author = com.manulaiko.weabot.dao.users.Factory.find(e.getAuthor());
-        if(author.rank < 2) {
+        if(author.rank < 0) {
             e.getTextChannel().sendMessage("You can't use this command!").queue();
 
             return;
@@ -98,6 +99,75 @@ public class Add extends Command
     {
         HashMap<String, Option> commands = new HashMap<>();
 
+        commands.put("message", new Option() {
+            /**
+             * Returns option description.
+             *
+             * @return Option description.
+             */
+            @Override
+            public String getDescription()
+            {
+                return "Adds a new message to the database.";
+            }
+
+            /**
+             * Handles the option.
+             *
+             * @param args    Option arguments.
+             * @param channel Channel
+             */
+            @Override
+            public void handle(String[] args, TextChannel channel)
+            {
+                if(args.length < 4) {
+                    this.printUsage(channel);
+
+                    return;
+                }
+
+                String category = args[2];
+                String text     = "";
+
+                for(int i = 3; i < args.length; i++) {
+                    if(!text.isEmpty()) {
+                        text += " ";
+                    }
+
+                    text += args[i];
+                }
+
+                Message m = com.manulaiko.weabot.dao.messages.Factory.create(text, category);
+
+                if(m.id == 0) {
+                    channel.sendMessage(
+                            "Couldn't insert message!\n"   +
+                            "Category: `"+ category +"`\n" +
+                            "Text: "+ text +"`"
+                    ).queue();
+
+                    return;
+                }
+
+                channel.sendMessage("Message `"+ m.text +"` created!\nID: "+ m.id).queue();
+            }
+
+            /**
+             * Prints option usage.
+             *
+             * @param channel Channel to send the message.
+             */
+            public void printUsage(TextChannel channel)
+            {
+                String message = "Options:\n" +
+                        "```\n" +
+                        "message [category] [text]\n" +
+                        "```\n" +
+                        "`category` can't contain whitespaces!";
+
+                channel.sendMessage(message).queue();
+            }
+        });
         commands.put("permission", new Option() {
             /**
              * Returns option description.

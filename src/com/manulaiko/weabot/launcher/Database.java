@@ -95,6 +95,15 @@ public class Database
                 ");"
         );
 
+        // Messages table, contains the messages used by different commands
+        this.update(
+                "CREATE TABLE `messages` (\n" +
+                "    `id`       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "    `text`     TEXT NOT NULL,\n" +
+                "    `category` TEXT NOT NULL DEFAULT ''\n" +
+                ");"
+        );
+
         // Scrappers table, contains the image scrappers
         this.update(
                 "CREATE TABLE `scrappers` (\n" +

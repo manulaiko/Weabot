@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.manulaiko.weabot.dao.messages.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -72,7 +73,7 @@ public class Delete extends Command
         }
 
         User author = com.manulaiko.weabot.dao.users.Factory.find(e.getAuthor());
-        if(author.rank < 2) {
+        if(author.rank < 0) {
             e.getTextChannel().sendMessage("You can't use this command!").queue();
 
             return;
@@ -98,6 +99,73 @@ public class Delete extends Command
     {
         HashMap<String, Option> commands = new HashMap<>();
 
+        commands.put("message", new Option() {
+            /**
+             * Returns option description.
+             *
+             * @return Option description.
+             */
+            @Override
+            public String getDescription()
+            {
+                return "Deletes a message from the database.";
+            }
+
+            /**
+             * Handles the option.
+             *
+             * @param args    Option arguments.
+             * @param channel Channel
+             */
+            @Override
+            public void handle(String[] args, TextChannel channel)
+            {
+                if(args.length < 3) {
+                    this.printUsage(channel);
+
+                    return;
+                }
+
+                int id = 0;
+                try {
+                    id = Integer.parseInt(args[2]);
+                } catch(Exception e) {
+                    this.printUsage(channel);
+
+                    return;
+                }
+
+                Message m = com.manulaiko.weabot.dao.messages.Factory.find(id);
+                if(m == null) {
+                    channel.sendMessage("Message with ID "+ id +" does not exist!").queue();
+
+                    return;
+                }
+
+                if(com.manulaiko.weabot.dao.messages.Factory.delete(m)) {
+                    channel.sendMessage("Message deleted!").queue();
+
+                    return;
+                }
+
+                channel.sendMessage("Couldn't delete message!").queue();
+            }
+
+            /**
+             * Prints option usage.
+             *
+             * @param channel Channel to send the message.
+             */
+            public void printUsage(TextChannel channel)
+            {
+                String message = "Options:\n" +
+                        "```\n" +
+                        "message [id]\n" +
+                        "```\n";
+
+                channel.sendMessage(message).queue();
+            }
+        });
         commands.put("permission", new Option() {
             /**
              * Returns option description.
