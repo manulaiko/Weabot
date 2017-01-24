@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.manulaiko.weabot.commands.*;
 import com.manulaiko.weabot.listerners.ImageScrapper;
+import com.manulaiko.weabot.listerners.MentionListener;
 import com.manulaiko.weabot.listerners.MessageListener;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -84,17 +85,16 @@ public class Weabot
     private JDA _loadBotAccount(String token) throws Exception
     {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
+        String     host    = Main.configuration.getString("proxy.host");
+        int        port    = Main.configuration.getInt("proxy.port");
 
         if(Main.configuration.getBoolean("proxy.enabled")) {
             builder.setProxy(
-                    new HttpHost(
-                            Main.configuration.getString("proxy.host"),
-                            Main.configuration.getInt("proxy.port")
-                    )
+                    new HttpHost(host, port)
             );
 
-            System.setProperty("http.proxyHost", Main.configuration.getString("proxy.host"));
-            System.setProperty("http.proxyPort", Main.configuration.getString("proxy.port"));
+            System.setProperty("http.proxyHost", host);
+            System.setProperty("http.proxyPort", port+"");
         }
 
         builder.setToken(token);
@@ -133,8 +133,9 @@ public class Weabot
      */
     private void _addListeners()
     {
-        ListenerAdapter[] listeners = new ListenerAdapter[]{
+        ListenerAdapter[] listeners = new ListenerAdapter[] {
                 new MessageListener(),
+                new MentionListener(),
                 new ImageScrapper()
         };
 
@@ -156,6 +157,7 @@ public class Weabot
             new Add(),
             new Delete(),
             new Stats(),
+            new Bully(),
             new Help()
         };
 
