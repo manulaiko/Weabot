@@ -80,6 +80,8 @@ public class ImageScrapper extends ListenerAdapter
             }
 
             attachment.download(f);
+
+            Main.weabot.scrappedImages++;
         });
     }
 }

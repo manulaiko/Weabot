@@ -146,6 +146,38 @@ public class Factory
     }
 
     /**
+     * Returns all scrappers.
+     *
+     * @return All scrappers from database
+     */
+    public static List<Scrapper> all()
+    {
+        List<Scrapper> scrappers = new ArrayList<>();
+
+        ResultSet rs = Main.database.query("SELECT * FROM `scrappers`");
+        try {
+            while(rs.next()) {
+                Scrapper s = new Scrapper(
+                        rs.getInt("id"),
+                        rs.getString("channel_id"),
+                        rs.getString("path")
+                );
+
+                scrappers.add(s);
+            }
+        } catch(Exception e) {
+            Console.println("Couldn't build scrapper!");
+            Console.println(e.getMessage());
+
+            if(Console.debug) {
+                e.printStackTrace();
+            }
+        }
+
+        return scrappers;
+    }
+
+    /**
      * Deletes a scrapper from the database.
      *
      * @param scrapper Scrapper to delete.

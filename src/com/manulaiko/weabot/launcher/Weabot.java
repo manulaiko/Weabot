@@ -33,6 +33,21 @@ public class Weabot
     public HashMap<String, Command> commands = new HashMap<>();
 
     /**
+     * Received messages.
+     */
+    public int receivedMessages = 0;
+
+    /**
+     * Executed commands.
+     */
+    public int executedCommands = 0;
+
+    /**
+     * Scrapped images.
+     */
+    public int scrappedImages   = 0;
+
+    /**
      * Constructor.
      *
      * @param token Bot token.
@@ -140,6 +155,7 @@ public class Weabot
             new Config(),
             new Add(),
             new Delete(),
+            new Stats(),
             new Help()
         };
 

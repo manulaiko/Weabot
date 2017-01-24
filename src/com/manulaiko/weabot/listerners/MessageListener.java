@@ -24,6 +24,8 @@ public class MessageListener extends ListenerAdapter
     @Override
     public void onMessageReceived(MessageReceivedEvent e)
     {
+        Main.weabot.receivedMessages++;
+
         if(Main.configuration.getBoolean("core.print_messages")) {
             String message = this.formatMessage(
                     e.getMessage().getContent(),
@@ -47,6 +49,7 @@ public class MessageListener extends ListenerAdapter
 
         Main.weabot.commands.forEach((i, c) -> {
             if(command.equalsIgnoreCase(i)) {
+                Main.weabot.executedCommands++;
                 c.execute(e, args);
             }
         });
