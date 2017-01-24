@@ -73,7 +73,7 @@ public class Delete extends Command
         }
 
         User author = com.manulaiko.weabot.dao.users.Factory.find(e.getAuthor());
-        if(author.rank < 0) {
+        if(author.rank < 3) {
             e.getTextChannel().sendMessage("You can't use this command!").queue();
 
             return;
