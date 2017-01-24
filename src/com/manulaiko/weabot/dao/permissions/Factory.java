@@ -125,7 +125,7 @@ public class Factory
      */
     public static boolean delete(Permission permission)
     {
-        int rows = Main.database.update("DELETE * FROM `permissions` WHERE `id`=?", permission.id);
+        int rows = Main.database.update("DELETE FROM `permissions` WHERE `id`=?", permission.id);
 
         return (rows > 0);
     }

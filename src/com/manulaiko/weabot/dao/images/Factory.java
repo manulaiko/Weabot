@@ -94,7 +94,7 @@ public class Factory
      */
     public static boolean delete(Image image)
     {
-        int rows = Main.database.update("DELETE * FROM `images` WHERE `id`=?", image.id);
+        int rows = Main.database.update("DELETE FROM `images` WHERE `id`=?", image.id);
 
         return (rows > 0);
     }

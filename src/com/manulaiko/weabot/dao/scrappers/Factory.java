@@ -120,9 +120,10 @@ public class Factory
      */
     public static List<Scrapper> byPath(String path)
     {
+        File           f         = new File(path);
         List<Scrapper> scrappers = new ArrayList<>();
 
-        ResultSet rs = Main.database.query("SELECT * FROM `scrappers` WHERE `path`=?", path);
+        ResultSet rs = Main.database.query("SELECT * FROM `scrappers` WHERE `path`=?", f.getAbsolutePath());
         try {
             while(rs.next()) {
                 Scrapper s = new Scrapper(
@@ -186,7 +187,7 @@ public class Factory
      */
     public static boolean delete(Scrapper scrapper)
     {
-        int rows = Main.database.update("DELETE * FROM `scrappers` WHERE `id`=?", scrapper.id);
+        int rows = Main.database.update("DELETE FROM `scrappers` WHERE `id`=?", scrapper.id);
 
         return (rows > 0);
     }

@@ -42,7 +42,7 @@ public class Stats extends Command
 
         builder.addField("Users", this.users(event.getGuild()), true);
 
-        event.getTextChannel().sendMessage(builder.build());
+        event.getTextChannel().sendMessage(builder.build()).queue();
     }
 
     /**
