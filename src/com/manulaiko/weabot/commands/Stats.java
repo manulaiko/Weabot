@@ -32,7 +32,8 @@ public class Stats extends Command
     {
         EmbedBuilder builder = new EmbedBuilder();
 
-        builder.addField("Runtime", this.runtime(), false);
+        builder.addField("Runtime", this.runtime(), true);
+        builder.addField("Version", Main.version, false);
 
         builder.addField("Received messages", this.receivedMessages(), true);
         builder.addField("Executed commands", this.executedCommands(), true);
