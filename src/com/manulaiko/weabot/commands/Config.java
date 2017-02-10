@@ -47,7 +47,7 @@ public class Config extends Command
     @Override
     public String getUsage()
     {
-        return this.getFullName() +" ( ([key] [value]) | ([user] [key] [value]) | help)";
+        return this.getFullName() +" ( ([key] [value]) | ([user] [key] [value]) | help | list )";
     }
 
     /**
@@ -88,6 +88,12 @@ public class Config extends Command
             value = args[3];
         }
 
+        if(key.equalsIgnoreCase("list")) {
+            this._printPermissions(e.getTextChannel(), Factory.find(user));
+
+            return;
+        }
+
         this._handle(e.getTextChannel(), user, e.getAuthor(), key, value);
     }
 
@@ -108,6 +114,26 @@ public class Config extends Command
         message += "```";
 
         channel.sendMessage(message).queue();
+    }
+
+    /**
+     * Prints user's permission.
+     *
+     * @param channel Channel to print the result.
+     * @param user    User to print the permissions.
+     */
+    private void _printPermissions(TextChannel channel, User user)
+    {
+        String message = "Permissions of *"+ user.name +"*:\n" +
+                         "```";
+
+        for(Permission p : user.permissions) {
+            message += " - "+ p.name +" ("+ p.id +": "+ p.description +"\n";
+        }
+
+        message += "```";
+
+        channel.sendMessage(message);
     }
 
     /**
