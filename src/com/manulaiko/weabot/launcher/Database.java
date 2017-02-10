@@ -161,7 +161,7 @@ public class Database
         this.update(
                 "INSERT INTO `permissions` (`name`, `rank`, `description`) VALUES \n"                         +
                 "('can_change_rank', 3, 'Allows the user to change its rank'),\n"                             +
-                "('can_change_others_config', 2, 'Allows the user to change other\\\'s config'),\n"           +
+                "('can_change_others_config', 2, 'Allows the user to change others config'),\n"               +
                 "('can_add_images', 2, 'Allows the user to add images to the database'),\n"                   +
                 "('can_add_permissions', 2, 'Allows the user to add permissions to the database'),\n"         +
                 "('can_add_messages', 2, 'Allows the user to add messages to the database'),\n"               +
@@ -172,6 +172,19 @@ public class Database
                 "('can_delete_messages', 2, 'Allows the user to delete messages from the database'),\n"       +
                 "('can_delete_categories', 2, 'Allows the user to delete categories'),\n"                     +
                 "('can_delete_scrappers', 3, 'Allows the user to delete image scrappers');"
+        );
+
+        // Categories
+        this.update(
+                "INSERT INTO `categories` (`name`, `description`) VALUES \n"    +
+                "('mentions', 'Messages to send when the bot is mentioned'),\n" +
+                "('bully', 'Bully messages'),\n"                                +
+                "('pet', 'Pet images'),\n"                                      +
+                "('self_pet', 'Self petting images'),\n"                        +
+                "('pet_rejected', 'Pet rejected images'),\n"                    +
+                "('grope', 'Grope images'),\n"                                  +
+                "('self_grope', 'Self gropping images'),\n"                     +
+                "('grope_rejected', 'Grope rejected images');"
         );
 
         // Stats
