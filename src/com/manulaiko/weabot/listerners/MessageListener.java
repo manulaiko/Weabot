@@ -1,6 +1,8 @@
 package com.manulaiko.weabot.listerners;
 
 import com.manulaiko.tabitha.Console;
+import com.manulaiko.weabot.dao.stats.Factory;
+import com.manulaiko.weabot.dao.stats.Stat;
 import com.manulaiko.weabot.launcher.Main;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -25,6 +27,16 @@ public class MessageListener extends ListenerAdapter
     public void onMessageReceived(MessageReceivedEvent e)
     {
         Main.weabot.receivedMessages++;
+        Stat stat = Factory.find("received_messages");
+        try {
+            long val  = Long.parseLong(stat.text) + 1;
+            stat.text = val +"";
+
+            stat.save();
+        } catch(Exception ex) {
+            Console.println("Couldn't update stats!");
+            Console.println(ex.getMessage());
+        }
 
         if(Main.configuration.getBoolean("core.print_messages")) {
             String message = this.formatMessage(
@@ -50,6 +62,17 @@ public class MessageListener extends ListenerAdapter
         Main.weabot.commands.forEach((i, c) -> {
             if(command.equalsIgnoreCase(i)) {
                 Main.weabot.executedCommands++;
+                Stat s = com.manulaiko.weabot.dao.stats.Factory.find("scrapped_images");
+                try {
+                    long val = Long.parseLong(s.text) + 1;
+                    s.text   = val +"";
+
+                    s.save();
+                } catch(Exception ex) {
+                    Console.println("Couldn't update stats!");
+                    Console.println(ex.getMessage());
+                }
+
                 c.execute(e, args);
             }
         });
@@ -67,11 +90,17 @@ public class MessageListener extends ListenerAdapter
      */
     public String formatMessage(String message, String author, String channel, String guild)
     {
-        String format = Main.configuration.getString("messages.format");
+        try {
+            String format = Main.configuration.getString("messages.format");
 
-        return format.replaceAll("\\{MESSAGE\\}", message)
-                     .replaceAll("\\{AUTHOR\\}", author)
-                     .replaceAll("\\{CHANNEL\\}", channel)
-                     .replaceAll("\\{GUILD\\}", guild);
+            return format.replaceAll("\\{MESSAGE\\}", message)
+                         .replaceAll("\\{AUTHOR\\}", author)
+                         .replaceAll("\\{CHANNEL\\}", channel)
+                         .replaceAll("\\{GUILD\\}", guild);
+        } catch(Exception e) {
+            Console.println("Couldn't format message!");
+        }
+
+        return message;
     }
 }
