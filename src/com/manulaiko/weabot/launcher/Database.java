@@ -1,10 +1,14 @@
 package com.manulaiko.weabot.launcher;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import com.manulaiko.tabitha.Console;
 import com.manulaiko.tabitha.filesystem.File;
+import com.manulaiko.weabot.dao.permissions.Permission;
+import com.manulaiko.weabot.dao.stats.Stat;
 import org.sqlite.JDBC;
 
 /**
@@ -138,6 +142,14 @@ public class Database
                 "    `path`       TEXT NOT NULL DEFAULT ''\n" +
                 ");"
         );
+
+        // Stats table
+        this.update(
+                "CREATE TABLE `stats` (\n" +
+                "   `id`   TEXT NOT NULL,\n" +
+                "   `text` TEXT NOT NULL\n" +
+                ");"
+        );
     }
 
     /**
@@ -145,12 +157,29 @@ public class Database
      */
     private void _insertRows()
     {
-        // Dump permissions
-        // Permissions list:
-        //  - `Allow Other Users To Command Me`: Allows other users to use commands on other users (e.g. pet another user)
+        // Permissions
         this.update(
-                "INSERT INTO `permissions` (`id`, `name`, `rank`, `description`) VALUES" +
-                "(1, 'change_rank', 3, 'Allows to change user rank');"
+                "INSERT INTO `permissions` (`name`, `rank`, `description`) VALUES \n"                         +
+                "('can_change_rank', 3, 'Allows the user to change its rank'),\n"                             +
+                "('can_change_others_config', 2, 'Allows the user to change other\\\'s config'),\n"           +
+                "('can_add_images', 2, 'Allows the user to add images to the database'),\n"                   +
+                "('can_add_permissions', 2, 'Allows the user to add permissions to the database'),\n"         +
+                "('can_add_messages', 2, 'Allows the user to add messages to the database'),\n"               +
+                "('can_add_categories', 2, 'Allows the user to add categories to the database'),\n"           +
+                "('can_add_scrappers', 3, 'Allows the user to add image scrappers'),\n"                       +
+                "('can_delete_images', 2, 'Allows the user to delete images from the database'),\n"           +
+                "('can_delete_permissions', 2, 'Allows the user to delete permissions from the database'),\n" +
+                "('can_delete_messages', 2, 'Allows the user to delete messages from the database'),\n"       +
+                "('can_delete_categories', 2, 'Allows the user to delete categories'),\n"                     +
+                "('can_delete_scrappers', 3, 'Allows the user to delete image scrappers');"
+        );
+
+        // Stats
+        this.update(
+                "INSERT INTO `stats` (`id`, `text`) VALUES \n" +
+                "('scrapped_images', '0'),\n"                  +
+                "('received_messages', '0'),\n"                +
+                "('executed_commands', '0');"
         );
     }
 
