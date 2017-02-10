@@ -22,14 +22,14 @@ public class Factory
      */
     public static Stat find(String id)
     {
-        Stat s = null;
+        Stat s = new Stat("", "undefined");
 
         ResultSet rs = Main.database.query("SELECT * FROM `stats` WHERE `id`=?", id);
         try {
             if(!rs.isBeforeFirst()) {
                 Console.println("Stat not found!");
 
-                return null;
+                return s;
             }
 
             s = new Stat(

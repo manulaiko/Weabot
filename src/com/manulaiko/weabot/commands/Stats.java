@@ -77,7 +77,7 @@ public class Stats extends Command
      */
     public String receivedMessages()
     {
-        return Main.weabot.receivedMessages +"/"+ Factory.find("received_messages");
+        return Main.weabot.receivedMessages +"/"+ Factory.find("received_messages").text;
     }
 
     /**
@@ -87,7 +87,7 @@ public class Stats extends Command
      */
     public String executedCommands()
     {
-        return Main.weabot.executedCommands +"/"+ Factory.find("executed_commands");
+        return Main.weabot.executedCommands +"/"+ Factory.find("executed_commands").text;
     }
 
     /**
@@ -114,7 +114,7 @@ public class Stats extends Command
      */
     public String scrappedImages()
     {
-        return Main.weabot.scrappedImages +"/"+ Factory.find("scrapped_images");
+        return Main.weabot.scrappedImages +"/"+ Factory.find("scrapped_images").text;
     }
 
     /**
