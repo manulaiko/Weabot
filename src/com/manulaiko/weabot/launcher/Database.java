@@ -182,6 +182,7 @@ public class Database
                 "INSERT INTO `categories` (`name`, `description`) VALUES \n"    +
                 "('mentions', 'Messages to send when the bot is mentioned'),\n" +
                 "('bully', 'Bully messages'),\n"                                +
+                "('cry', 'Crying images :/'),\n"                                +
                 "('pet', 'Pet images'),\n"                                      +
                 "('self_pet', 'Self petting images'),\n"                        +
                 "('pet_rejected', 'Pet rejected images'),\n"                    +

@@ -154,6 +154,7 @@ public class Weabot
             new Pet(),
             new Grope(),
             new Spank(),
+            new Cry(),
             new Image(),
             new Add(),
             new Delete(),
