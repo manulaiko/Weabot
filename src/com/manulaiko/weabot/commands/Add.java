@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.manulaiko.weabot.dao.categories.Category;
 import com.manulaiko.weabot.dao.images.Image;
 import com.manulaiko.weabot.dao.messages.Message;
 import com.manulaiko.weabot.dao.permissions.Factory;
@@ -276,10 +277,18 @@ public class Add extends Command
                     return;
                 }
 
-                String link = args[2];
-                String cat  = args[3];
+                String         link       = args[2];
+                List<Category> categories = new ArrayList<>();
 
-                Image i = com.manulaiko.weabot.dao.images.Factory.create(link, cat);
+                for(int i = 3; i < args.length; i++) {
+                    Category cat = com.manulaiko.weabot.dao.categories.Factory.find(args[i]);
+
+                    if(cat != null) {
+                        categories.add(cat);
+                    }
+                }
+
+                Image i = com.manulaiko.weabot.dao.images.Factory.create(link, categories);
 
                 if(i.id == 0) {
                     channel.sendMessage("Couldn't insert image!").queue();

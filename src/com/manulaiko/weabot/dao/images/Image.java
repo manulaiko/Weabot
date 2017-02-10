@@ -1,5 +1,11 @@
 package com.manulaiko.weabot.dao.images;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.manulaiko.tabitha.Console;
+import com.manulaiko.weabot.dao.categories.Category;
+import com.manulaiko.weabot.dao.categories.Factory;
 import com.manulaiko.weabot.launcher.Main;
 
 /**
@@ -22,22 +28,22 @@ public class Image
     public String link;
 
     /**
-     * Image category.
+     * Categories.
      */
-    public String category;
+    public List<Category> categories = new ArrayList<>();
 
     /**
      * Constructor.
      *
-     * @param id        Image ID.
-     * @param link      Image link.
-     * @param category Image category.
+     * @param id         Image ID.
+     * @param link       Image link.
+     * @param categories Categories
      */
-    public Image(int id, String link, String category)
+    public Image(int id, String link, List<Category> categories)
     {
-        this.id       = id;
-        this.link     = link;
-        this.category = category;
+        this.id         = id;
+        this.link       = link;
+        this.categories = categories;
     }
 
     /**
@@ -47,19 +53,53 @@ public class Image
     {
         if(this.id == 0) {
             this.id = Main.database.insert(
-                    "INSERT INTO `images` (`link`, `category`) VALUES (?, ?)",
-                    this.link,
-                    this.category
+                    "INSERT INTO `images` (`link`) VALUES (?)",
+                    this.link
             );
 
             return;
         }
 
         Main.database.update(
-                "UPDATE `images` SET `link`=? `category`=? WHERE `id`=?",
+                "UPDATE `images` SET `link`=? WHERE `id`=?",
                 this.link,
-                this.category,
                 this.id
         );
+    }
+
+    /**
+     * Adds the image to a category.
+     *
+     * @param category Category to add the image.
+     */
+    public void addToCategory(String category)
+    {
+        this.addToCategory(Factory.find(category));
+    }
+
+    /**
+     * Adds the image to a category.
+     *
+     * @param category Category to add the image.
+     */
+    public void addToCategory(Category category)
+    {
+        if(this.categories.contains(category)) {
+            return;
+        }
+
+        int id = Main.database.update(
+                "INSERT INTO `images_categories` (`images_id`, `categories_id`) VALUES (?, ?)",
+                this.id,
+                category.id
+         );
+
+        if(id == 0) {
+            Console.println("Couldn't add image `"+ this.id +"` to category `"+ category.name +"`!");
+
+            return;
+        }
+
+        this.categories.add(category);
     }
 }

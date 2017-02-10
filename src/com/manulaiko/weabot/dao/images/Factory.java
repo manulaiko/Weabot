@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.manulaiko.tabitha.Console;
+import com.manulaiko.weabot.dao.categories.Category;
 import com.manulaiko.weabot.launcher.Main;
 
 /**
@@ -31,13 +32,13 @@ public class Factory
             if(!rs.isBeforeFirst()) {
                 Console.println("Image not found!");
 
-                return Factory.create(id, "", "");
+                return Factory.create(id, "", new ArrayList<>());
             }
 
             i = new Image(
                     rs.getInt("id"),
                     rs.getString("link"),
-                    rs.getString("category")
+                    new ArrayList<>()
             );
         } catch(Exception e) {
             Console.println("Couldn't build image!");
@@ -62,16 +63,16 @@ public class Factory
     {
         List<Image> images = new ArrayList<>();
 
-        ResultSet rs = Main.database.query("SELECT * FROM `images` WHERE `category`=?", category);
+        Category cat = com.manulaiko.weabot.dao.categories.Factory.find(category);
+
+        if(cat == null) {
+            return images;
+        }
+
+        ResultSet rs = Main.database.query("SELECT * FROM `images_categories` WHERE `categories_id`=?", cat.id);
         try {
             while(rs.next()) {
-                Image i = new Image(
-                        rs.getInt("id"),
-                        rs.getString("link"),
-                        rs.getString("category")
-                );
-
-                images.add(i);
+                images.add(Factory.find(rs.getInt("images_id")));
             }
         } catch(Exception e) {
             Console.println("Couldn't build image!");
@@ -118,15 +119,15 @@ public class Factory
     /**
      * Creates and returns a new image.
      *
-     * @param id       Image ID.
-     * @param link     Image link.
-     * @param category Image category.
+     * @param id         Image ID.
+     * @param link       Image link.
+     * @param categories Image categories.
      *
      * @return Image from database.
      */
-    public static Image create(int id, String link, String category)
+    public static Image create(int id, String link, List<Category> categories)
     {
-        Image i = new Image(id, link, category);
+        Image i = new Image(id, link, categories);
 
         i.save();
 
@@ -136,14 +137,14 @@ public class Factory
     /**
      * Creates and returns a new image.
      *
-     * @param link     Image link.
-     * @param category Image category.
+     * @param link       Image link.
+     * @param categories Image categories.
      *
      * @return Image from database.
      */
-    public static Image create(String link, String category)
+    public static Image create(String link, List<Category> categories)
     {
-        return Factory.create(0, link, category);
+        return Factory.create(0, link, categories);
     }
 
     /**
@@ -155,6 +156,6 @@ public class Factory
      */
     public static Image create(String link)
     {
-        return Factory.create(0, link, "");
+        return Factory.create(0, link, new ArrayList<>());
     }
 }
