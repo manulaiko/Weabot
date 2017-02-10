@@ -118,6 +118,6 @@ public class Rank extends Command
         user.rank = value;
         user.save();
 
-        channel.sendMessage(user.name +"'s rank is now `"+ value +"`");
+        channel.sendMessage(user.name +"'s rank is now `"+ value +"`").queue();
     }
 }

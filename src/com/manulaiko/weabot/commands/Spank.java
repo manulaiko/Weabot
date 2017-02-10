@@ -88,7 +88,7 @@ public class Spank extends Command
 
         com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("spank");
         if(i == null) {
-            e.getTextChannel().sendMessage("No image found in category `spank`!");
+            e.getTextChannel().sendMessage("No image found in category `spank`!").queue();
 
             return;
         }
@@ -110,7 +110,7 @@ public class Spank extends Command
         com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("spank_rejected");
 
         if(i == null) {
-            channel.sendMessage("No image/message found in category `spank_rejected`!");
+            channel.sendMessage("No image/message found in category `spank_rejected`!").queue();
 
             return;
         }
@@ -132,7 +132,7 @@ public class Spank extends Command
         com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("self_spank");
 
         if(i == null) {
-            channel.sendMessage("No image/message found in category `self_spank`!");
+            channel.sendMessage("No image/message found in category `self_spank`!").queue();
 
             return;
         }

@@ -133,7 +133,7 @@ public class Config extends Command
 
         message += "```";
 
-        channel.sendMessage(message);
+        channel.sendMessage(message).queue();
     }
 
     /**

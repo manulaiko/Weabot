@@ -90,7 +90,7 @@ public class Grope extends Command
 
         com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("grope");
         if(i == null) {
-            e.getTextChannel().sendMessage("No image found in category `grope`!");
+            e.getTextChannel().sendMessage("No image found in category `grope`!").queue();
 
             return;
         }
@@ -112,7 +112,7 @@ public class Grope extends Command
         com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("grope_rejected");
 
         if(i == null) {
-            channel.sendMessage("No image/message found in category `grope_rejected`!");
+            channel.sendMessage("No image/message found in category `grope_rejected`!").queue();
 
             return;
         }
@@ -134,7 +134,7 @@ public class Grope extends Command
         com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("self_grope");
 
         if(i == null) {
-            channel.sendMessage("No image found in category `self_grope`!");
+            channel.sendMessage("No image found in category `self_grope`!").queue();
 
             return;
         }

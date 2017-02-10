@@ -88,7 +88,7 @@ public class Pet extends Command
 
         com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("pet");
         if(i == null) {
-            e.getTextChannel().sendMessage("No image found in category `pet`!");
+            e.getTextChannel().sendMessage("No image found in category `pet`!").queue();
 
             return;
         }
@@ -110,7 +110,7 @@ public class Pet extends Command
         com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("pet_rejected");
 
         if(i == null) {
-            channel.sendMessage("No image/message found in category `pet_rejected`!");
+            channel.sendMessage("No image/message found in category `pet_rejected`!").queue();
 
             return;
         }
@@ -132,7 +132,7 @@ public class Pet extends Command
         com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("self_pet");
 
         if(i == null) {
-            channel.sendMessage("No image/message found in category `self_pet`!");
+            channel.sendMessage("No image/message found in category `self_pet`!").queue();
 
             return;
         }
