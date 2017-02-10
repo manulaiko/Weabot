@@ -180,7 +180,7 @@ public class Database
         // Categories
         this.update(
                 "INSERT INTO `categories` (`name`, `description`) VALUES \n"    +
-                "('mentions', 'Messages to send when the bot is mentioned'),\n" +
+                "('mention', 'Messages to send when the bot is mentioned'),\n"  +
                 "('bully', 'Bully messages'),\n"                                +
                 "('cry', 'Crying images :/'),\n"                                +
                 "('pet', 'Pet images'),\n"                                      +
