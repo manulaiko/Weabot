@@ -156,10 +156,11 @@ public class Weabot
             new Spank(),
             new Cry(),
             new Image(),
-            new Add(),
-            new Delete(),
+            new Say(),
             new Bully(),
             new Config(),
+            new Add(),
+            new Delete(),
             new Rank(),
             new Stats(),
             new Help()
