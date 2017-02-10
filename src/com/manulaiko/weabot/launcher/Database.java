@@ -171,7 +171,9 @@ public class Database
                 "('can_delete_permissions', 2, 'Allows the user to delete permissions from the database'),\n" +
                 "('can_delete_messages', 2, 'Allows the user to delete messages from the database'),\n"       +
                 "('can_delete_categories', 2, 'Allows the user to delete categories'),\n"                     +
-                "('can_delete_scrappers', 3, 'Allows the user to delete image scrappers');"
+                "('can_delete_scrappers', 3, 'Allows the user to delete image scrappers'),\n"                 +
+                "('none_can_pet_me', 0, 'Disallows users from petting you'),\n"                               +
+                "('none_can_grope_me', 0, 'Disallows users from gropping you');"
         );
 
         // Categories
