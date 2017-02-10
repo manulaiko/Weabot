@@ -47,7 +47,7 @@ public class Config extends Command
     @Override
     public String getUsage()
     {
-        return this.getFullName() +" ( ([key] [value]) | ([user] [key] [value]) | help | list )";
+        return this.getFullName() +" ( ([key] [value]) | ([user] ( [key] [value] | list ) ) | help )";
     }
 
     /**
@@ -59,7 +59,7 @@ public class Config extends Command
     @Override
     public void execute(MessageReceivedEvent e, String[] args)
     {
-        if(args.length <= 1) {
+        if(args.length < 1) {
             super.printUsage(e.getTextChannel());
 
             return;
@@ -88,7 +88,7 @@ public class Config extends Command
             value = args[3];
         }
 
-        if(key.equalsIgnoreCase("list")) {
+        if(value.equalsIgnoreCase("list")) {
             this._printPermissions(e.getTextChannel(), Factory.find(user));
 
             return;
@@ -148,10 +148,11 @@ public class Config extends Command
     private void _handle(TextChannel channel, net.dv8tion.jda.core.entities.User user, net.dv8tion.jda.core.entities.User author, String key, String value)
     {
         User u = Factory.find(user);
+        User a = Factory.find(author);
 
         if(
             !author.getId().equalsIgnoreCase(u.discordID) &&
-            !u.canChangeOthersConfig()
+            ( !a.canChangeOthersConfig() || a.rank < 3 )
         ) {
             channel.sendMessage("You can't change other's configuration!").queue();
 
@@ -166,7 +167,7 @@ public class Config extends Command
             return;
         }
 
-        if(u.rank < permission.rank) {
+        if(a.rank < permission.rank) {
             channel.sendMessage("You don't have enough privileges to change this permission!").queue();
 
             return;
