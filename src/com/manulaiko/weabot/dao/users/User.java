@@ -149,4 +149,84 @@ public class User
     {
         return this.permission("can_change_rank");
     }
+
+    /**
+     * Checks that I can add new images to the database.
+     *
+     * @return `true` if I can add new images, `false` if not.
+     */
+    public boolean canAddImages()
+    {
+        return this.permission("can_add_images");
+    }
+
+    /**
+     * Checks that I can add new scrappers to the database.
+     *
+     * @return `true` if I can add new scrappers, `false` if not.
+     */
+    public boolean canAddScrappers()
+    {
+        return this.permission("can_add_scrappers");
+    }
+
+    /**
+     * Checks that I can add new messages to the database.
+     *
+     * @return `true` if I can add new messages, `false` if not.
+     */
+    public boolean canAddMessages()
+    {
+        return this.permission("can_add_messages");
+    }
+
+    /**
+     * Checks that I can add new permissions to the database.
+     *
+     * @return `true` if I can add new permissions, `false` if not.
+     */
+    public boolean canAddPermissions()
+    {
+        return this.permission("can_add_permissions");
+    }
+
+    /**
+     * Checks that I can delete images from the database.
+     *
+     * @return `true` if I can delete images, `false` if not.
+     */
+    public boolean canDeleteImages()
+    {
+        return this.permission("can_delete_images");
+    }
+
+    /**
+     * Checks that I can delete scrappers from the database.
+     *
+     * @return `true` if I can delete scrappers, `false` if not.
+     */
+    public boolean canDeleteScrappers()
+    {
+        return this.permission("can_delete_scrappers");
+    }
+
+    /**
+     * Checks that I can delete messages from the database.
+     *
+     * @return `true` if I can delete messages, `false` if not.
+     */
+    public boolean canDeleteMessages()
+    {
+        return this.permission("can_delete_messages");
+    }
+
+    /**
+     * Checks that I can delete permissions from the database.
+     *
+     * @return `true` if I can delete permissions, `false` if not.
+     */
+    public boolean canDeletePermissions()
+    {
+        return this.permission("can_delete_permissions");
+    }
 }

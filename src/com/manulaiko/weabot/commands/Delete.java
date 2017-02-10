@@ -72,22 +72,16 @@ public class Delete extends Command
             return;
         }
 
-        User author = com.manulaiko.weabot.dao.users.Factory.find(e.getAuthor());
-        if(author.rank < 3) {
-            e.getTextChannel().sendMessage("You can't use this command!").queue();
-
-            return;
-        }
-
         HashMap<String, Option> commands = this.getOptions();
-
         if(!commands.containsKey(args[1])) {
             this.printHelp(e.getTextChannel());
 
             return;
         }
 
-        commands.get(args[1]).handle(args, e.getTextChannel());
+        User author = com.manulaiko.weabot.dao.users.Factory.find(e.getAuthor());
+
+        commands.get(args[1]).handle(args, e.getTextChannel(), author);
     }
 
     /**
@@ -115,11 +109,21 @@ public class Delete extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canDeleteMessages() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!");
+
+                    return;
+                }
+
                 if(args.length < 3) {
                     this.printUsage(channel);
 
@@ -182,11 +186,21 @@ public class Delete extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canDeletePermissions() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!");
+
+                    return;
+                }
+
                 if(args.length < 3) {
                     this.printUsage(channel);
 
@@ -264,11 +278,21 @@ public class Delete extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canDeleteImages() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!");
+
+                    return;
+                }
+
                 if(args.length < 3) {
                     this.printUsage(channel);
 
@@ -328,11 +352,21 @@ public class Delete extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canDeleteScrappers() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!");
+
+                    return;
+                }
+
                 if(args.length < 3) {
                     this.printUsage(channel);
 
@@ -453,8 +487,9 @@ public class Delete extends Command
          * Handles the option.
          *
          * @param args    Option arguments.
-         * @param channel Channel
+         * @param channel Channel.
+         * @param author  Message author.
          */
-        public abstract void handle(String[] args, TextChannel channel);
+        public abstract void handle(String[] args, TextChannel channel, User author);
     }
 }
