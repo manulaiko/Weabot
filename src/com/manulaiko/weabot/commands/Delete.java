@@ -119,7 +119,7 @@ public class Delete extends Command
                     !author.canDeleteMessages() &&
                     author.rank < 3
                 ) {
-                    channel.sendMessage("You can't use this command!");
+                    channel.sendMessage("You can't use this command!").queue();
 
                     return;
                 }
@@ -196,7 +196,7 @@ public class Delete extends Command
                     !author.canDeletePermissions() &&
                     author.rank < 3
                 ) {
-                    channel.sendMessage("You can't use this command!");
+                    channel.sendMessage("You can't use this command!").queue();
 
                     return;
                 }
@@ -218,12 +218,12 @@ public class Delete extends Command
                     }
 
                     if(Factory.delete(p)) {
-                        channel.sendMessage("Permission deleted!");
+                        channel.sendMessage("Permission deleted!").queue();
 
                         return;
                     }
 
-                    channel.sendMessage("Couldn't delete permission!");
+                    channel.sendMessage("Couldn't delete permission!").queue();
 
                     return;
                 } catch(Exception e) {
@@ -238,12 +238,12 @@ public class Delete extends Command
                 }
 
                 if(Factory.delete(p)) {
-                    channel.sendMessage("Permission deleted!");
+                    channel.sendMessage("Permission deleted!").queue();
 
                     return;
                 }
 
-                channel.sendMessage("Couldn't delete permission!");
+                channel.sendMessage("Couldn't delete permission!").queue();
             }
 
             /**
@@ -288,7 +288,7 @@ public class Delete extends Command
                     !author.canDeleteImages() &&
                     author.rank < 3
                 ) {
-                    channel.sendMessage("You can't use this command!");
+                    channel.sendMessage("You can't use this command!").queue();
 
                     return;
                 }
@@ -310,12 +310,12 @@ public class Delete extends Command
                     }
 
                     if(com.manulaiko.weabot.dao.images.Factory.delete(i)) {
-                        channel.sendMessage("Image deleted!");
+                        channel.sendMessage("Image deleted!").queue();
 
                         return;
                     }
 
-                    channel.sendMessage("Couldn't delete image!");
+                    channel.sendMessage("Couldn't delete image!").queue();
                 } catch(Exception e) {
                     this.printUsage(channel);
                 }
@@ -362,7 +362,7 @@ public class Delete extends Command
                     !author.canDeleteScrappers() &&
                     author.rank < 3
                 ) {
-                    channel.sendMessage("You can't use this command!");
+                    channel.sendMessage("You can't use this command!").queue();
 
                     return;
                 }
@@ -389,7 +389,7 @@ public class Delete extends Command
                         return;
                     }
 
-                    channel.sendMessage("Couldn't delete scrapper!");
+                    channel.sendMessage("Couldn't delete scrapper!").queue();
 
                     return;
                 } catch(Exception e) {

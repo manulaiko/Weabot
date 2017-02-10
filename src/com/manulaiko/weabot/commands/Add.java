@@ -120,7 +120,7 @@ public class Add extends Command
                     !author.canAddMessages() &&
                     author.rank < 3
                 ) {
-                    channel.sendMessage("You can't use this command!");
+                    channel.sendMessage("You can't use this command!").queue();
 
                     return;
                 }
@@ -208,7 +208,7 @@ public class Add extends Command
                     !author.canAddPermissions() &&
                     author.rank < 3
                 ) {
-                    channel.sendMessage("You can't use this command!");
+                    channel.sendMessage("You can't use this command!").queue();
 
                     return;
                 }
@@ -299,7 +299,7 @@ public class Add extends Command
                     !author.canAddImages() &&
                     author.rank < 3
                 ) {
-                    channel.sendMessage("You can't use this command!");
+                    channel.sendMessage("You can't use this command!").queue();
 
                     return;
                 }
@@ -374,7 +374,7 @@ public class Add extends Command
                     !author.canAddScrappers() &&
                     author.rank < 3
                 ) {
-                    channel.sendMessage("You can't use this command!");
+                    channel.sendMessage("You can't use this command!").queue();
 
                     return;
                 }
