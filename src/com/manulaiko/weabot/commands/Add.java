@@ -127,8 +127,8 @@ public class Add extends Command
                     return;
                 }
 
-                String category = args[2];
-                String text     = "";
+                String[] cats = args[2].split(",");
+                String   text = "";
 
                 for(int i = 3; i < args.length; i++) {
                     if(!text.isEmpty()) {
@@ -138,12 +138,21 @@ public class Add extends Command
                     text += args[i];
                 }
 
-                Message m = com.manulaiko.weabot.dao.messages.Factory.create(text, category);
+                List<Category> categories = new ArrayList<>();
+                for(String cat : cats) {
+                    Category c = com.manulaiko.weabot.dao.categories.Factory.find(cat);
+
+                    if(c != null) {
+                        categories.add(c);
+                    }
+                }
+
+                Message m = com.manulaiko.weabot.dao.messages.Factory.create(text, categories);
 
                 if(m.id == 0) {
                     channel.sendMessage(
                             "Couldn't insert message!\n"   +
-                            "Category: `"+ category +"`\n" +
+                            "Categories: `"+ args[2] +"`\n" +
                             "Text: "+ text +"`"
                     ).queue();
 
@@ -162,9 +171,9 @@ public class Add extends Command
             {
                 String message = "Options:\n" +
                         "```\n" +
-                        "message [category] [text]\n" +
+                        "message [categories] [text]\n" +
                         "```\n" +
-                        "`category` can't contain whitespaces!";
+                        "`categories` can't contain whitespaces (they're separated with `,`)!";
 
                 channel.sendMessage(message).queue();
             }

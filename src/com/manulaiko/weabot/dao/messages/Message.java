@@ -1,5 +1,9 @@
 package com.manulaiko.weabot.dao.messages;
 
+import java.util.List;
+
+import com.manulaiko.tabitha.Console;
+import com.manulaiko.weabot.dao.categories.Category;
 import com.manulaiko.weabot.launcher.Main;
 
 /**
@@ -22,22 +26,22 @@ public class Message
     public String text;
 
     /**
-     * Message category.
+     * Message categories.
      */
-    public String category;
+    public List<Category> categories;
 
     /**
      * Constructor.
      *
-     * @param id       Message ID.
-     * @param text     Message text.
-     * @param category Message category.
+     * @param id         Message ID.
+     * @param text       Message text.
+     * @param categories Message categories.
      */
-    public Message(int id, String text, String category)
+    public Message(int id, String text, List<Category> categories)
     {
-        this.id       = id;
-        this.text     = text;
-        this.category = category;
+        this.id         = id;
+        this.text       = text;
+        this.categories = categories;
     }
 
     /**
@@ -47,19 +51,42 @@ public class Message
     {
         if(this.id == 0) {
             this.id = Main.database.insert(
-                    "INSERT INTO `messages` (`text`, `category`) VALUES (?, ?)",
-                    this.text,
-                    this.category
+                    "INSERT INTO `messages` (`text`) VALUES (?)",
+                    this.text
             );
 
             return;
         }
 
         Main.database.update(
-                "UPDATE `messages` SET `text`=? `category`=? WHERE `id`=?",
+                "UPDATE `messages` SET `text`=? WHERE `id`=?",
                 this.text,
-                this.category,
                 this.id
         );
+    }
+    /**
+     * Adds the message to a category.
+     *
+     * @param category Category to add the message.
+     */
+    public void addToCategory(Category category)
+    {
+        if(this.categories.contains(category)) {
+            return;
+        }
+
+        int id = Main.database.update(
+                "INSERT INTO `messages_categories` (`messages_id`, `categories_id`) VALUES (?, ?)",
+                this.id,
+                category.id
+        );
+
+        if(id == 0) {
+            Console.println("Couldn't add message `"+ this.id +"` to category `"+ category.name +"`!");
+
+            return;
+        }
+
+        this.categories.add(category);
     }
 }
