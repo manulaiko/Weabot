@@ -488,13 +488,13 @@ public class Add extends Command
                 }
 
                 File f = new File(p);
-                if(f.exists() && f.isFile()) {
+                if(f.isFile()) {
                     channel.sendMessage("Path already exists and is a file!").queue();
 
                     return;
                 }
 
-                if(!f.mkdirs()) {
+                if(!f.isDirectory() && !f.mkdirs()) {
                     channel.sendMessage("Couldn't make directories!").queue();
 
                     return;
