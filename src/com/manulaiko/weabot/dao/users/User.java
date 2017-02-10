@@ -131,6 +131,16 @@ public class User
     }
 
     /**
+     * Checks that users can spank me.
+     *
+     * @return `true` if no users can spank me, `false` if not.
+     */
+    public boolean noneCanSpankMe()
+    {
+        return this.permission("none_can_spank_me");
+    }
+
+    /**
      * Checks that I can modify other's configuration.
      *
      * @return `true` if I can change other's configuration, `false` if not.

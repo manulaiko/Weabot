@@ -153,6 +153,7 @@ public class Weabot
             new Animu(),
             new Pet(),
             new Grope(),
+            new Spank(),
             new Image(),
             new Add(),
             new Delete(),
