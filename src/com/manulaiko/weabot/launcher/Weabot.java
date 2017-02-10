@@ -154,11 +154,12 @@ public class Weabot
             new Pet(),
             new Grope(),
             new Image(),
-            new Config(),
             new Add(),
             new Delete(),
-            new Stats(),
             new Bully(),
+            new Config(),
+            new Rank(),
+            new Stats(),
             new Help()
         };
 
