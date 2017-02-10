@@ -25,14 +25,21 @@ public class Factory
     {
         List<Permission> permissions = new ArrayList<>();
 
-        ResultSet rs = Main.database.query("SELECT * FROM `users_permissions`");
+        ResultSet rs = Main.database.query("SELECT * FROM `permissions`");
 
         try {
             while(rs.next()) {
-                permissions.add(Factory.find(rs.getInt("permissions_id")));
+                Permission p = new Permission(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("rank"),
+                        rs.getString("description")
+                );
+
+                permissions.add(p);
             }
         } catch(Exception e) {
-            Console.println("Couldn't find user's permission!");
+            Console.println("Couldn't find permission!");
             Console.println(e.getMessage());
 
             if(Console.debug) {

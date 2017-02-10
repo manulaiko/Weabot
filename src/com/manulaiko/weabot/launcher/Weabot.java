@@ -153,11 +153,16 @@ public class Weabot
             new Animu(),
             new Pet(),
             new Grope(),
+            new Spank(),
+            new Cry(),
+            new Image(),
+            new Say(),
+            new Bully(),
             new Config(),
             new Add(),
             new Delete(),
+            new Rank(),
             new Stats(),
-            new Bully(),
             new Help()
         };
 

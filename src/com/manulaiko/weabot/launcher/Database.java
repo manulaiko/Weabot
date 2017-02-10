@@ -1,10 +1,14 @@
 package com.manulaiko.weabot.launcher;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import com.manulaiko.tabitha.Console;
 import com.manulaiko.tabitha.filesystem.File;
+import com.manulaiko.weabot.dao.permissions.Permission;
+import com.manulaiko.weabot.dao.stats.Stat;
 import org.sqlite.JDBC;
 
 /**
@@ -86,12 +90,29 @@ public class Database
                 ");"
         );
 
+        // Categories table, contains categories used by images and messages
+        this.update(
+                "CREATE TABLE `categories` (\n" +
+                "    `id`          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "    `name`        TEXT NOT NULL,\n" +
+                "    `description` TEXT NOT NULL DEFAULT 'no description available'\n" +
+                ");"
+        );
+
         // Images table, contains the images used by different commands
         this.update(
                 "CREATE TABLE `images` (\n" +
                 "    `id`       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-                "    `link`     TEXT NOT NULL,\n" +
-                "    `category` TEXT NOT NULL DEFAULT ''\n" +
+                "    `link`     TEXT NOT NULL\n" +
+                ");"
+        );
+
+        // Many to many relations
+        this.update(
+                "CREATE TABLE `images_categories` (\n" +
+                "    `id`            INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "    `categories_id` INTEGER NOT NULL,\n" +
+                "    `images_id`     INTEGER NOT NULL\n" +
                 ");"
         );
 
@@ -104,12 +125,29 @@ public class Database
                 ");"
         );
 
+        // Many to many relations
+        this.update(
+                "CREATE TABLE `messages_categories` (\n" +
+                "   `id`            INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "   `categories_id` INTEGER NOT NULL,\n" +
+                "   `messages_id`   INTEGER NOT NULL\n" +
+                ");"
+        );
+
         // Scrappers table, contains the image scrappers
         this.update(
                 "CREATE TABLE `scrappers` (\n" +
                 "    `id`         INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                 "    `channel_id` TEXT NOT NULL,\n" +
                 "    `path`       TEXT NOT NULL DEFAULT ''\n" +
+                ");"
+        );
+
+        // Stats table
+        this.update(
+                "CREATE TABLE `stats` (\n" +
+                "   `id`   TEXT NOT NULL,\n" +
+                "   `text` TEXT NOT NULL\n" +
                 ");"
         );
     }
@@ -119,12 +157,49 @@ public class Database
      */
     private void _insertRows()
     {
-        // Dump permissions
-        // Permissions list:
-        //  - `Allow Other Users To Command Me`: Allows other users to use commands on other users (e.g. pet another user)
+        // Permissions
         this.update(
-                "INSERT INTO `permissions` (`id`, `name`, `rank`, `description`) VALUES" +
-                "(1, 'change_rank', 3, 'Allows to change user rank');"
+                "INSERT INTO `permissions` (`name`, `rank`, `description`) VALUES \n"                         +
+                "('can_change_rank', 3, 'Allows the user to change its rank'),\n"                             +
+                "('can_change_others_config', 2, 'Allows the user to change others config'),\n"               +
+                "('can_add_images', 2, 'Allows the user to add images to the database'),\n"                   +
+                "('can_add_permissions', 2, 'Allows the user to add permissions to the database'),\n"         +
+                "('can_add_messages', 2, 'Allows the user to add messages to the database'),\n"               +
+                "('can_add_categories', 2, 'Allows the user to add categories to the database'),\n"           +
+                "('can_add_scrappers', 3, 'Allows the user to add image scrappers'),\n"                       +
+                "('can_delete_images', 2, 'Allows the user to delete images from the database'),\n"           +
+                "('can_delete_permissions', 2, 'Allows the user to delete permissions from the database'),\n" +
+                "('can_delete_messages', 2, 'Allows the user to delete messages from the database'),\n"       +
+                "('can_delete_categories', 2, 'Allows the user to delete categories'),\n"                     +
+                "('can_delete_scrappers', 3, 'Allows the user to delete image scrappers'),\n"                 +
+                "('none_can_spank_me', 0, 'Disallows users from spanking you'),\n"                            +
+                "('none_can_pet_me', 0, 'Disallows users from petting you'),\n"                               +
+                "('none_can_grope_me', 0, 'Disallows users from groping you');"
+        );
+
+        // Categories
+        this.update(
+                "INSERT INTO `categories` (`name`, `description`) VALUES \n"    +
+                "('mention', 'Messages to send when the bot is mentioned'),\n"  +
+                "('bully', 'Bully messages'),\n"                                +
+                "('cry', 'Crying images :/'),\n"                                +
+                "('pet', 'Pet images'),\n"                                      +
+                "('self_pet', 'Self petting images'),\n"                        +
+                "('pet_rejected', 'Pet rejected images'),\n"                    +
+                "('spank', 'Spank images'),\n"                                  +
+                "('self_spank', 'Self spanking images'),\n"                     +
+                "('spank_rejected', 'Spank rejected images'),\n"                +
+                "('grope', 'Grope images'),\n"                                  +
+                "('self_grope', 'Self groping images'),\n"                      +
+                "('grope_rejected', 'Grope rejected images');"
+        );
+
+        // Stats
+        this.update(
+                "INSERT INTO `stats` (`id`, `text`) VALUES \n" +
+                "('scrapped_images', '0'),\n"                  +
+                "('received_messages', '0'),\n"                +
+                "('executed_commands', '0');"
         );
     }
 

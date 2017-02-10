@@ -2,16 +2,15 @@ package com.manulaiko.weabot.commands;
 
 import java.util.List;
 
-import com.manulaiko.weabot.dao.scrappers.Factory;
-import com.manulaiko.weabot.dao.scrappers.Scrapper;
-import com.manulaiko.weabot.launcher.Main;
+import com.manulaiko.weabot.dao.stats.Factory;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+
+import com.manulaiko.weabot.dao.scrappers.Scrapper;
+import com.manulaiko.weabot.launcher.Main;
 
 /**
  * Stats command.
@@ -78,7 +77,7 @@ public class Stats extends Command
      */
     public String receivedMessages()
     {
-        return Main.weabot.receivedMessages +"";
+        return Main.weabot.receivedMessages +"/"+ Factory.find("received_messages").text;
     }
 
     /**
@@ -88,7 +87,7 @@ public class Stats extends Command
      */
     public String executedCommands()
     {
-        return Main.weabot.executedCommands +"";
+        return Main.weabot.executedCommands +"/"+ Factory.find("executed_commands").text;
     }
 
     /**
@@ -98,7 +97,7 @@ public class Stats extends Command
      */
     public String scrappers()
     {
-        List<Scrapper> scrappers = Factory.all();
+        List<Scrapper> scrappers = com.manulaiko.weabot.dao.scrappers.Factory.all();
         String         message   = "```\n";
 
         for(Scrapper s : scrappers) {
@@ -115,7 +114,7 @@ public class Stats extends Command
      */
     public String scrappedImages()
     {
-        return Main.weabot.scrappedImages +"";
+        return Main.weabot.scrappedImages +"/"+ Factory.find("scrapped_images").text;
     }
 
     /**

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.manulaiko.weabot.dao.categories.Category;
 import com.manulaiko.weabot.dao.messages.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -72,22 +73,16 @@ public class Delete extends Command
             return;
         }
 
-        User author = com.manulaiko.weabot.dao.users.Factory.find(e.getAuthor());
-        if(author.rank < 3) {
-            e.getTextChannel().sendMessage("You can't use this command!").queue();
-
-            return;
-        }
-
         HashMap<String, Option> commands = this.getOptions();
-
         if(!commands.containsKey(args[1])) {
             this.printHelp(e.getTextChannel());
 
             return;
         }
 
-        commands.get(args[1]).handle(args, e.getTextChannel());
+        User author = com.manulaiko.weabot.dao.users.Factory.find(e.getAuthor());
+
+        commands.get(args[1]).handle(args, e.getTextChannel(), author);
     }
 
     /**
@@ -115,11 +110,21 @@ public class Delete extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canDeleteMessages() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!").queue();
+
+                    return;
+                }
+
                 if(args.length < 3) {
                     this.printUsage(channel);
 
@@ -182,11 +187,21 @@ public class Delete extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canDeletePermissions() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!").queue();
+
+                    return;
+                }
+
                 if(args.length < 3) {
                     this.printUsage(channel);
 
@@ -204,12 +219,12 @@ public class Delete extends Command
                     }
 
                     if(Factory.delete(p)) {
-                        channel.sendMessage("Permission deleted!");
+                        channel.sendMessage("Permission deleted!").queue();
 
                         return;
                     }
 
-                    channel.sendMessage("Couldn't delete permission!");
+                    channel.sendMessage("Couldn't delete permission!").queue();
 
                     return;
                 } catch(Exception e) {
@@ -224,12 +239,12 @@ public class Delete extends Command
                 }
 
                 if(Factory.delete(p)) {
-                    channel.sendMessage("Permission deleted!");
+                    channel.sendMessage("Permission deleted!").queue();
 
                     return;
                 }
 
-                channel.sendMessage("Couldn't delete permission!");
+                channel.sendMessage("Couldn't delete permission!").queue();
             }
 
             /**
@@ -242,6 +257,98 @@ public class Delete extends Command
                 String message = "Options:\n" +
                         "```\n" +
                         "permission ([id]|[name])\n" +
+                        "```\n" +
+                        "`name` can't contain whitespaces!";
+
+                channel.sendMessage(message).queue();
+            }
+        });
+        commands.put("permission", new Option() {
+            /**
+             * Returns option description.
+             *
+             * @return Option description.
+             */
+            @Override
+            public String getDescription()
+            {
+                return "Deletes a category from the database.";
+            }
+
+            /**
+             * Handles the option.
+             *
+             * @param args    Option arguments.
+             * @param channel Channel.
+             * @param author  Message author.
+             */
+            @Override
+            public void handle(String[] args, TextChannel channel, User author)
+            {
+                if(
+                    !author.canDeleteCategories() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!").queue();
+
+                    return;
+                }
+
+                if(args.length < 3) {
+                    this.printUsage(channel);
+
+                    return;
+                }
+
+                try {
+                    int id = Integer.parseInt(args[2]);
+
+                    Category c = com.manulaiko.weabot.dao.categories.Factory.find(id);
+                    if(c == null) {
+                        channel.sendMessage("Category with ID "+ id +" does not exist!").queue();
+
+                        return;
+                    }
+
+                    if(com.manulaiko.weabot.dao.categories.Factory.delete(c)) {
+                        channel.sendMessage("Category deleted!").queue();
+
+                        return;
+                    }
+
+                    channel.sendMessage("Couldn't delete category!").queue();
+
+                    return;
+                } catch(Exception e) {
+                    // Ignore
+                }
+
+                Category c = com.manulaiko.weabot.dao.categories.Factory.find(args[2]);
+                if(c == null) {
+                    channel.sendMessage("Category with name `"+ args[2] +"` does not exist!").queue();
+
+                    return;
+                }
+
+                if(com.manulaiko.weabot.dao.categories.Factory.delete(c)) {
+                    channel.sendMessage("Category deleted!").queue();
+
+                    return;
+                }
+
+                channel.sendMessage("Couldn't delete category!").queue();
+            }
+
+            /**
+             * Prints option usage.
+             *
+             * @param channel Channel to send the message.
+             */
+            public void printUsage(TextChannel channel)
+            {
+                String message = "Options:\n" +
+                        "```\n" +
+                        "category ([id]|[name])\n" +
                         "```\n" +
                         "`name` can't contain whitespaces!";
 
@@ -264,11 +371,21 @@ public class Delete extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canDeleteImages() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!").queue();
+
+                    return;
+                }
+
                 if(args.length < 3) {
                     this.printUsage(channel);
 
@@ -286,12 +403,12 @@ public class Delete extends Command
                     }
 
                     if(com.manulaiko.weabot.dao.images.Factory.delete(i)) {
-                        channel.sendMessage("Image deleted!");
+                        channel.sendMessage("Image deleted!").queue();
 
                         return;
                     }
 
-                    channel.sendMessage("Couldn't delete image!");
+                    channel.sendMessage("Couldn't delete image!").queue();
                 } catch(Exception e) {
                     this.printUsage(channel);
                 }
@@ -328,11 +445,21 @@ public class Delete extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canDeleteScrappers() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!").queue();
+
+                    return;
+                }
+
                 if(args.length < 3) {
                     this.printUsage(channel);
 
@@ -355,7 +482,7 @@ public class Delete extends Command
                         return;
                     }
 
-                    channel.sendMessage("Couldn't delete scrapper!");
+                    channel.sendMessage("Couldn't delete scrapper!").queue();
 
                     return;
                 } catch(Exception e) {
@@ -453,8 +580,9 @@ public class Delete extends Command
          * Handles the option.
          *
          * @param args    Option arguments.
-         * @param channel Channel
+         * @param channel Channel.
+         * @param author  Message author.
          */
-        public abstract void handle(String[] args, TextChannel channel);
+        public abstract void handle(String[] args, TextChannel channel, User author);
     }
 }

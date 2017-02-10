@@ -1,7 +1,6 @@
 package com.manulaiko.weabot.commands;
 
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import com.manulaiko.weabot.dao.permissions.Permission;
@@ -47,7 +46,7 @@ public class Config extends Command
     @Override
     public String getUsage()
     {
-        return this.getFullName() +" ( ([key] [value]) | ([user] [key] [value]) | help)";
+        return this.getFullName() +" ( ([key] [value]) | ([user] ( [key] [value] | list ) ) | help )";
     }
 
     /**
@@ -59,7 +58,7 @@ public class Config extends Command
     @Override
     public void execute(MessageReceivedEvent e, String[] args)
     {
-        if(args.length <= 1) {
+        if(args.length < 1) {
             super.printUsage(e.getTextChannel());
 
             return;
@@ -71,9 +70,10 @@ public class Config extends Command
             return;
         }
 
-        String                             key   = args[1];
-        String                             value = args[2];
-        net.dv8tion.jda.core.entities.User user  = e.getAuthor();
+        String key    = args[1];
+        String value  = args[2];
+        User   user   = Factory.find(e.getAuthor());
+        User   author = Factory.find(e.getAuthor());
 
         if(key.startsWith("@")) {
             if(args.length <= 3) {
@@ -82,13 +82,19 @@ public class Config extends Command
                 return;
             }
 
-            user = e.getMessage().getMentionedUsers().get(0);
+            user = Factory.find(e.getMessage().getMentionedUsers().get(0));
 
             key   = value;
             value = args[3];
         }
 
-        this._handle(e.getTextChannel(), user, e.getAuthor(), key, value);
+        if(value.equalsIgnoreCase("list")) {
+            this._printPermissions(e.getTextChannel(), user);
+
+            return;
+        }
+
+        this._handle(e.getTextChannel(), user, author, key, value);
     }
 
     /**
@@ -111,6 +117,26 @@ public class Config extends Command
     }
 
     /**
+     * Prints user's permission.
+     *
+     * @param channel Channel to print the result.
+     * @param user    User to print the permissions.
+     */
+    private void _printPermissions(TextChannel channel, User user)
+    {
+        String message = "Permissions of *"+ user.name +"*:\n" +
+                         "```";
+
+        for(Permission p : user.permissions) {
+            message += " - "+ p.name +" ("+ p.id +": "+ p.description +"\n";
+        }
+
+        message += "```";
+
+        channel.sendMessage(message).queue();
+    }
+
+    /**
      * Handles request.
      *
      * @param channel Channel to print the result.
@@ -119,13 +145,11 @@ public class Config extends Command
      * @param key     Requested configuration.
      * @param value   New value of `key`.
      */
-    private void _handle(TextChannel channel, net.dv8tion.jda.core.entities.User user, net.dv8tion.jda.core.entities.User author, String key, String value)
+    private void _handle(TextChannel channel, User user, User author, String key, String value)
     {
-        User u = Factory.find(user);
-
         if(
-            !author.getId().equalsIgnoreCase(u.discordID) &&
-            !u.canChangeOthersConfig()
+            !author.discordID.equalsIgnoreCase(user.discordID) &&
+            ( !author.canChangeOthersConfig() || author.rank < 3 )
         ) {
             channel.sendMessage("You can't change other's configuration!").queue();
 
@@ -140,15 +164,15 @@ public class Config extends Command
             return;
         }
 
-        if(u.rank < permission.rank) {
+        if(author.rank < permission.rank) {
             channel.sendMessage("You don't have enough privileges to change this permission!").queue();
 
             return;
         }
 
-        if(u.permissions.contains(permission)) {
+        if(user.permissions.contains(permission)) {
             if(!this._asBool(value)) {
-                this._deletePermission(u, permission);
+                this._deletePermission(user, permission);
 
                 channel.sendMessage("Permission deleted!").queue();
 
@@ -159,7 +183,7 @@ public class Config extends Command
         }
 
         if(this._asBool(value)) {
-            this._addPermission(u, permission);
+            this._addPermission(user, permission);
 
             channel.sendMessage("Permission added!").queue();
 

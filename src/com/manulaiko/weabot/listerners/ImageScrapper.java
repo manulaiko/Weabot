@@ -6,6 +6,7 @@ import java.util.List;
 import com.manulaiko.tabitha.Console;
 import com.manulaiko.weabot.dao.scrappers.Factory;
 import com.manulaiko.weabot.dao.scrappers.Scrapper;
+import com.manulaiko.weabot.dao.stats.Stat;
 import com.manulaiko.weabot.launcher.Main;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -82,6 +83,16 @@ public class ImageScrapper extends ListenerAdapter
             attachment.download(f);
 
             Main.weabot.scrappedImages++;
+            Stat stat = com.manulaiko.weabot.dao.stats.Factory.find("scrapped_images");
+            try {
+                long val  = Long.parseLong(stat.text) + 1;
+                stat.text = val +"";
+
+                stat.save();
+            } catch(Exception e) {
+                Console.println("Couldn't update stats!");
+                Console.println(e.getMessage());
+            }
         });
     }
 }

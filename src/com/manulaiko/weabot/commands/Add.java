@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.manulaiko.weabot.dao.categories.Category;
 import com.manulaiko.weabot.dao.images.Image;
 import com.manulaiko.weabot.dao.messages.Message;
 import com.manulaiko.weabot.dao.permissions.Factory;
@@ -72,22 +73,16 @@ public class Add extends Command
             return;
         }
 
-        User author = com.manulaiko.weabot.dao.users.Factory.find(e.getAuthor());
-        if(author.rank < 2) {
-            e.getTextChannel().sendMessage("You can't use this command!").queue();
-
-            return;
-        }
-
         HashMap<String, Option> commands = this.getOptions();
-
         if(!commands.containsKey(args[1])) {
             this.printHelp(e.getTextChannel());
 
             return;
         }
 
-        commands.get(args[1]).handle(args, e.getTextChannel());
+        User author = com.manulaiko.weabot.dao.users.Factory.find(e.getAuthor());
+
+        commands.get(args[1]).handle(args, e.getTextChannel(), author);
     }
 
     /**
@@ -115,19 +110,29 @@ public class Add extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canAddMessages() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!").queue();
+
+                    return;
+                }
+
                 if(args.length < 4) {
                     this.printUsage(channel);
 
                     return;
                 }
 
-                String category = args[2];
-                String text     = "";
+                String[] cats = args[2].split(",");
+                String   text = "";
 
                 for(int i = 3; i < args.length; i++) {
                     if(!text.isEmpty()) {
@@ -137,12 +142,21 @@ public class Add extends Command
                     text += args[i];
                 }
 
-                Message m = com.manulaiko.weabot.dao.messages.Factory.create(text, category);
+                List<Category> categories = new ArrayList<>();
+                for(String cat : cats) {
+                    Category c = com.manulaiko.weabot.dao.categories.Factory.find(cat);
+
+                    if(c != null) {
+                        categories.add(c);
+                    }
+                }
+
+                Message m = com.manulaiko.weabot.dao.messages.Factory.create(text, categories);
 
                 if(m.id == 0) {
                     channel.sendMessage(
                             "Couldn't insert message!\n"   +
-                            "Category: `"+ category +"`\n" +
+                            "Categories: `"+ args[2] +"`\n" +
                             "Text: "+ text +"`"
                     ).queue();
 
@@ -161,9 +175,9 @@ public class Add extends Command
             {
                 String message = "Options:\n" +
                         "```\n" +
-                        "message [category] [text]\n" +
+                        "message [categories] [text]\n" +
                         "```\n" +
-                        "`category` can't contain whitespaces!";
+                        "`categories` can't contain whitespaces (they're separated with `,`)!";
 
                 channel.sendMessage(message).queue();
             }
@@ -184,11 +198,21 @@ public class Add extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canAddPermissions() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!").queue();
+
+                    return;
+                }
+
                 if(args.length < 4) {
                     this.printUsage(channel);
 
@@ -249,6 +273,85 @@ public class Add extends Command
                 channel.sendMessage(message).queue();
             }
         });
+        commands.put("category", new Option() {
+            /**
+             * Returns option description.
+             *
+             * @return Option description.
+             */
+            @Override
+            public String getDescription()
+            {
+                return "Adds a new category to the database.";
+            }
+
+            /**
+             * Handles the option.
+             *
+             * @param args    Option arguments.
+             * @param channel Channel.
+             * @param author  Message author.
+             */
+            @Override
+            public void handle(String[] args, TextChannel channel, User author)
+            {
+                if(
+                    !author.canAddCategories() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!").queue();
+
+                    return;
+                }
+
+                if(args.length < 3) {
+                    this.printUsage(channel);
+
+                    return;
+                }
+
+                String name = args[2];
+                String desc = "";
+
+                for(int i = 3; i < args.length; i++) {
+                    if(!desc.isEmpty()) {
+                        desc += " ";
+                    }
+
+                    desc += args[i];
+                }
+
+                Category c = com.manulaiko.weabot.dao.categories.Factory.create(name, desc);
+
+                if(c.id == 0) {
+                    channel.sendMessage(
+                            "Couldn't insert category!\n" +
+                            "Name: `"+ name +"`\n"          +
+                            "Description: "+ desc +";"
+                    ).queue();
+
+                    return;
+                }
+
+                channel.sendMessage("Category `"+ c.name +"` created!\nID: "+ c.id).queue();
+            }
+
+            /**
+             * Prints option usage.
+             *
+             * @param channel Channel to send the message.
+             */
+            public void printUsage(TextChannel channel)
+            {
+                String message = "Options:\n" +
+                        "```\n" +
+                        "category [name] [description]\n" +
+                        "```\n" +
+                        "`name` can't contain whitespaces!";
+
+                channel.sendMessage(message).queue();
+            }
+        });
         commands.put("image", new Option() {
             /**
              * Returns option description.
@@ -265,21 +368,39 @@ public class Add extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canAddImages() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!").queue();
+
+                    return;
+                }
+
                 if(args.length < 4) {
                     this.printUsage(channel);
 
                     return;
                 }
 
-                String link = args[2];
-                String cat  = args[3];
+                String         link       = args[2];
+                List<Category> categories = new ArrayList<>();
 
-                Image i = com.manulaiko.weabot.dao.images.Factory.create(link, cat);
+                for(int i = 3; i < args.length; i++) {
+                    Category cat = com.manulaiko.weabot.dao.categories.Factory.find(args[i]);
+
+                    if(cat != null) {
+                        categories.add(cat);
+                    }
+                }
+
+                Image i = com.manulaiko.weabot.dao.images.Factory.create(link, categories);
 
                 if(i.id == 0) {
                     channel.sendMessage("Couldn't insert image!").queue();
@@ -322,11 +443,21 @@ public class Add extends Command
              * Handles the option.
              *
              * @param args    Option arguments.
-             * @param channel Channel
+             * @param channel Channel.
+             * @param author  Message author.
              */
             @Override
-            public void handle(String[] args, TextChannel channel)
+            public void handle(String[] args, TextChannel channel, User author)
             {
+                if(
+                    !author.canAddScrappers() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!").queue();
+
+                    return;
+                }
+
                 if(args.length < 3) {
                     this.printUsage(channel);
 
@@ -357,13 +488,13 @@ public class Add extends Command
                 }
 
                 File f = new File(p);
-                if(f.exists() && f.isFile()) {
+                if(f.isFile()) {
                     channel.sendMessage("Path already exists and is a file!").queue();
 
                     return;
                 }
 
-                if(!f.mkdirs()) {
+                if(!f.isDirectory() && !f.mkdirs()) {
                     channel.sendMessage("Couldn't make directories!").queue();
 
                     return;
@@ -465,8 +596,9 @@ public class Add extends Command
          * Handles the option.
          *
          * @param args    Option arguments.
-         * @param channel Channel
+         * @param channel Channel.
+         * @param author  Message author.
          */
-        public abstract void handle(String[] args, TextChannel channel);
+        public abstract void handle(String[] args, TextChannel channel, User author);
     }
 }

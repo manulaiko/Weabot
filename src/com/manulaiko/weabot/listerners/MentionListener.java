@@ -54,6 +54,12 @@ public class MentionListener extends ListenerAdapter
     {
         Message m = Factory.getRandomMessage("mention");
 
+        if(m == null) {
+            channel.sendMessage("No messages found under `mention` category!").queue();
+
+            return;
+        }
+
         channel.sendMessage(m.text).queue();
     }
 }
