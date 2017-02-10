@@ -191,6 +191,16 @@ public class User
     }
 
     /**
+     * Checks that I can add new categories to the database.
+     *
+     * @return `true` if I can add new categories, `false` if not.
+     */
+    public boolean canAddCategories()
+    {
+        return this.permission("can_add_categories");
+    }
+
+    /**
      * Checks that I can delete images from the database.
      *
      * @return `true` if I can delete images, `false` if not.
@@ -228,5 +238,15 @@ public class User
     public boolean canDeletePermissions()
     {
         return this.permission("can_delete_permissions");
+    }
+
+    /**
+     * Checks that I can delete categories from the database.
+     *
+     * @return `true` if I can delete categories, `false` if not.
+     */
+    public boolean canDeleteCategories()
+    {
+        return this.permission("can_delete_categories");
     }
 }

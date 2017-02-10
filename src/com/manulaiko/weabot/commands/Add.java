@@ -273,6 +273,85 @@ public class Add extends Command
                 channel.sendMessage(message).queue();
             }
         });
+        commands.put("category", new Option() {
+            /**
+             * Returns option description.
+             *
+             * @return Option description.
+             */
+            @Override
+            public String getDescription()
+            {
+                return "Adds a new category to the database.";
+            }
+
+            /**
+             * Handles the option.
+             *
+             * @param args    Option arguments.
+             * @param channel Channel.
+             * @param author  Message author.
+             */
+            @Override
+            public void handle(String[] args, TextChannel channel, User author)
+            {
+                if(
+                    !author.canAddCategories() &&
+                    author.rank < 3
+                ) {
+                    channel.sendMessage("You can't use this command!").queue();
+
+                    return;
+                }
+
+                if(args.length < 3) {
+                    this.printUsage(channel);
+
+                    return;
+                }
+
+                String name = args[2];
+                String desc = "";
+
+                for(int i = 3; i < args.length; i++) {
+                    if(!desc.isEmpty()) {
+                        desc += " ";
+                    }
+
+                    desc += args[i];
+                }
+
+                Category c = com.manulaiko.weabot.dao.categories.Factory.create(name, desc);
+
+                if(c.id == 0) {
+                    channel.sendMessage(
+                            "Couldn't insert category!\n" +
+                            "Name: `"+ name +"`\n"          +
+                            "Description: "+ desc +";"
+                    ).queue();
+
+                    return;
+                }
+
+                channel.sendMessage("Category `"+ c.name +"` created!\nID: "+ c.id).queue();
+            }
+
+            /**
+             * Prints option usage.
+             *
+             * @param channel Channel to send the message.
+             */
+            public void printUsage(TextChannel channel)
+            {
+                String message = "Options:\n" +
+                        "```\n" +
+                        "category [name] [description]\n" +
+                        "```\n" +
+                        "`name` can't contain whitespaces!";
+
+                channel.sendMessage(message).queue();
+            }
+        });
         commands.put("image", new Option() {
             /**
              * Returns option description.

@@ -28,7 +28,7 @@ public class Factory
             if(!rs.isBeforeFirst()) {
                 Console.println("Category not found!");
 
-                return Factory.create(id, "", "");
+                return null;
             }
 
             c = new Category(
@@ -63,7 +63,7 @@ public class Factory
             if(!rs.isBeforeFirst()) {
                 Console.println("Category not found!");
 
-                return Factory.create(0, name, "");
+                return null;
             }
 
             c = new Category(
