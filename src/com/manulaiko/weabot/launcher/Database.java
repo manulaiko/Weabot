@@ -86,12 +86,29 @@ public class Database
                 ");"
         );
 
+        // Categories table, contains categories used by images and messages
+        this.update(
+                "CREATE TABLE `categories` (\n" +
+                "    `id`          INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "    `name`        TEXT NOT NULL,\n" +
+                "    `description` TEXT NOT NULL DEFAULT 'no description available'\n" +
+                ");"
+        );
+
         // Images table, contains the images used by different commands
         this.update(
                 "CREATE TABLE `images` (\n" +
                 "    `id`       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
-                "    `link`     TEXT NOT NULL,\n" +
-                "    `category` TEXT NOT NULL DEFAULT ''\n" +
+                "    `link`     TEXT NOT NULL\n" +
+                ");"
+        );
+
+        // Many to many relations
+        this.update(
+                "CREATE TABLE `images_categories` (\n" +
+                "    `id`            INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "    `categories_id` INTEGER NOT NULL,\n" +
+                "    `images_id`     INTEGER NOT NULL\n" +
                 ");"
         );
 
@@ -101,6 +118,15 @@ public class Database
                 "    `id`       INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                 "    `text`     TEXT NOT NULL,\n" +
                 "    `category` TEXT NOT NULL DEFAULT ''\n" +
+                ");"
+        );
+
+        // Many to many relations
+        this.update(
+                "CREATE TABLE `messages_categories` (\n" +
+                "   `id`            INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
+                "   `categories_id` INTEGER NOT NULL,\n" +
+                "   `messages_id`   INTEGER NOT NULL\n" +
                 ");"
         );
 
