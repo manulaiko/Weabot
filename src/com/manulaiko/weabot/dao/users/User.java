@@ -93,19 +93,31 @@ public class User
     }
 
     /**
+     * Checks that I have a certain permission.
+     *
+     * @param name Permission name.
+     *
+     * @return `true` if I have the `name` permission, `false` if not.
+     */
+    public boolean permission(String name)
+    {
+        for(Permission permission : this.permissions) {
+            if(permission.name.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Checks that users can pet me.
      *
      * @return `true` if no users can pet me, `false` if not.
      */
     public boolean noneCanPetMe()
     {
-        for(Permission permission : this.permissions) {
-            if(permission.name.equalsIgnoreCase("none_can_pet_me")) {
-                return true;
-            }
-        }
-
-        return false;
+        return this.permission("none_can_pet_me");
     }
 
     /**
@@ -115,13 +127,7 @@ public class User
      */
     public boolean noneCanGropeMe()
     {
-        for(Permission permission : this.permissions) {
-            if(permission.name.equalsIgnoreCase("none_can_grope_me")) {
-                return true;
-            }
-        }
-
-        return false;
+        return this.permission("none_can_grope_me");
     }
 
     /**
@@ -131,12 +137,16 @@ public class User
      */
     public boolean canChangeOthersConfig()
     {
-        for(Permission permission : this.permissions) {
-            if(permission.name.equalsIgnoreCase("can_change_others_config")) {
-                return true;
-            }
-        }
+        return this.permission("can_change_others_config");
+    }
 
-        return false;
+    /**
+     * Checks that I can change my rank (or other's rank)
+     *
+     * @return `true` if I can change ranks, `false` if not.
+     */
+    public boolean canChangeRank()
+    {
+        return this.permission("can_change_rank");
     }
 }
