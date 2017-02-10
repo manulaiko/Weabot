@@ -2,6 +2,8 @@ package com.manulaiko.weabot.commands;
 
 import java.util.List;
 
+import com.manulaiko.weabot.dao.images.*;
+import com.manulaiko.weabot.dao.messages.Message;
 import com.manulaiko.weabot.dao.users.Factory;
 import com.manulaiko.weabot.dao.users.User;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -75,23 +77,49 @@ public class Grope extends Command
         User user = Factory.find(mentions.get(0));
 
         if(user.noneCanGropeMe()) {
-            e.getTextChannel().sendMessage(
-                    com.manulaiko.weabot.dao.images.Factory.getRandomImage("grope_rejected").link +"\n"+
-                    "One does not simply grope "+ user.name +"!"
-            ).queue();
+            this._rejectGrope(e.getTextChannel(), user);
 
             return;
         }
 
         if(user.discordID.equalsIgnoreCase(e.getAuthor().getId())) {
-            this.selfPet(e.getTextChannel(), user);
+            this.selfGrope(e.getTextChannel(), user);
+
+            return;
+        }
+
+        com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("grope");
+        if(i == null) {
+            e.getTextChannel().sendMessage("No image found in category `grope`!");
 
             return;
         }
 
         e.getTextChannel().sendMessage(
-                com.manulaiko.weabot.dao.images.Factory.getRandomImage("grope").link +"\n"+
+                i.link +"\n"+
                 user.name +" was groped by "+ e.getAuthor().getName()
+        ).queue();
+    }
+
+    /**
+     * Rejects a grope.
+     *
+     * @param channel Channel to send the message.
+     * @param user    User that rejected the grope.
+     */
+    private void _rejectGrope(TextChannel channel, User user)
+    {
+        com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("grope_rejected");
+
+        if(i == null) {
+            channel.sendMessage("No image/message found in category `grope_rejected`!");
+
+            return;
+        }
+
+        channel.sendMessage(
+                i.link +"\n"+
+                "You can't grope "+ user.name +"!"
         ).queue();
     }
 
@@ -101,10 +129,18 @@ public class Grope extends Command
      * @param channel Channel to send the message.
      * @param user    User that doesn't have anyone to grope him.
      */
-    public void selfPet(TextChannel channel, User user)
+    public void selfGrope(TextChannel channel, User user)
     {
+        com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("self_grope");
+
+        if(i == null) {
+            channel.sendMessage("No image found in category `self_grope`!");
+
+            return;
+        }
+
         channel.sendMessage(
-                com.manulaiko.weabot.dao.images.Factory.getRandomImage("self_grope").link +"\n"+
+                i.link +"\n"+
                 user.name +" was groped by himself"
         ).queue();
     }

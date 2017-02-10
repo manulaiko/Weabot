@@ -75,23 +75,49 @@ public class Pet extends Command
         User user = Factory.find(mentions.get(0));
 
         if(user.noneCanPetMe()) {
-            e.getTextChannel().sendMessage(
-                    com.manulaiko.weabot.dao.images.Factory.getRandomImage("pet_rejected").link +"\n"+
-                    "One does not simply pet "+ user.name +"!"
-            ).queue();
+            this._rejectPet(e.getTextChannel(), user);
 
             return;
         }
 
         if(user.discordID.equalsIgnoreCase(e.getAuthor().getId())) {
-            this.selfPet(e.getTextChannel(), user);
+            this._selfPet(e.getTextChannel(), user);
+
+            return;
+        }
+
+        com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("pet");
+        if(i == null) {
+            e.getTextChannel().sendMessage("No image found in category `pet`!");
 
             return;
         }
 
         e.getTextChannel().sendMessage(
-                com.manulaiko.weabot.dao.images.Factory.getRandomImage("pet").link +"\n"+
+                i.link +"\n"+
                 user.name +" was petted by "+ e.getAuthor().getName()
+        ).queue();
+    }
+
+    /**
+     * Rejects a pet.
+     *
+     * @param channel Channel to send the message.
+     * @param user    User that rejected the pet.
+     */
+    private void _rejectPet(TextChannel channel, User user)
+    {
+        com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("pet_rejected");
+
+        if(i == null) {
+            channel.sendMessage("No image/message found in category `pet_rejected`!");
+
+            return;
+        }
+
+        channel.sendMessage(
+                i.link +"\n"+
+                "You can't pet "+ user.name +"!"
         ).queue();
     }
 
@@ -101,11 +127,19 @@ public class Pet extends Command
      * @param channel Channel to send the message.
      * @param user    User that doesn't have anyone to pet him.
      */
-    public void selfPet(TextChannel channel, User user)
+    private void _selfPet(TextChannel channel, User user)
     {
+        com.manulaiko.weabot.dao.images.Image i = com.manulaiko.weabot.dao.images.Factory.getRandomImage("self_pet");
+
+        if(i == null) {
+            channel.sendMessage("No image/message found in category `self_pet`!");
+
+            return;
+        }
+
         channel.sendMessage(
-                com.manulaiko.weabot.dao.images.Factory.getRandomImage("self_pet").link +"\n"+
-                user.name +" was petted by himself"
+                i.link +"\n"+
+                user.name +" was petted by himself :/"
         ).queue();
     }
 }

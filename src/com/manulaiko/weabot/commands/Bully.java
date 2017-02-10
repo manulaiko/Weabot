@@ -75,6 +75,12 @@ public class Bully extends Command
 
         Message m = Factory.getRandomMessage("bully");
 
+        if(m == null) {
+            e.getTextChannel().sendMessage("No message found under `bully` category!");
+
+            return;
+        }
+
         e.getTextChannel().sendMessage(mentions.get(0).getName() +", "+ m.text).queue();
     }
 }

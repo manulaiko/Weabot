@@ -111,6 +111,10 @@ public class Factory
     {
         List<Image> images = Factory.findByCategory(category);
 
+        if(images.size() == 0) {
+            return null;
+        }
+
         int i = ThreadLocalRandom.current().nextInt(0, images.size());
 
         return images.get(i);
@@ -130,6 +134,14 @@ public class Factory
         Image i = new Image(id, link, categories);
 
         i.save();
+
+        for(Category c : categories) {
+            Main.database.insert(
+                    "INSERT INTO `images_categories` (`images_id`, `categories_id`) VALUES (?, ?)",
+                    i.id,
+                    c.id
+             );
+        }
 
         return i;
     }

@@ -111,6 +111,10 @@ public class Factory
     {
         List<Message> messages = Factory.findByCategory(category);
 
+        if(messages.size() == 0) {
+            return null;
+        }
+
         int m = ThreadLocalRandom.current().nextInt(0, messages.size());
 
         return messages.get(m);
@@ -130,6 +134,14 @@ public class Factory
         Message m = new Message(id, text, categories);
 
         m.save();
+
+        for(Category c : categories) {
+            Main.database.insert(
+                    "INSERT INTO `messages_categories` (`messages_id`, `categories_id`) VALUES (?, ?)",
+                    m.id,
+                    c.id
+            );
+        }
 
         return m;
     }

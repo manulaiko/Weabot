@@ -62,6 +62,12 @@ public class Image extends Command
 
         com.manulaiko.weabot.dao.images.Image i = Factory.getRandomImage(args[1]);
 
+        if(i == null) {
+            e.getTextChannel().sendMessage("No image found under `"+ args[1] +"` category!").queue();
+
+            return;
+        }
+
         e.getTextChannel().sendMessage(i.link).queue();
     }
 }
